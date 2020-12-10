@@ -107,16 +107,34 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <searchBar contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="L6e-tV-7CD">
+                            <searchBar contentMode="redraw" placeholder="Search for users" translatesAutoresizingMaskIntoConstraints="NO" id="L6e-tV-7CD">
                                 <rect key="frame" x="0.0" y="140" width="414" height="56"/>
                                 <textInputTraits key="textInputTraits"/>
                             </searchBar>
+                            <tableView hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="GVG-mI-1r9">
+                                <rect key="frame" x="0.0" y="196" width="414" height="666"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="searchcell" id="8eB-P4-lFt">
+                                        <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="8eB-P4-lFt" id="N2J-Cl-ba7">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="D3V-gy-cpQ"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="GVG-mI-1r9" firstAttribute="trailing" secondItem="D3V-gy-cpQ" secondAttribute="trailing" id="HGp-pQ-xGR"/>
+                            <constraint firstItem="GVG-mI-1r9" firstAttribute="bottom" secondItem="D3V-gy-cpQ" secondAttribute="bottom" id="PF6-mi-5Rh"/>
+                            <constraint firstItem="GVG-mI-1r9" firstAttribute="leading" secondItem="D3V-gy-cpQ" secondAttribute="leading" id="RCu-cu-kTa"/>
                             <constraint firstItem="L6e-tV-7CD" firstAttribute="trailing" secondItem="D3V-gy-cpQ" secondAttribute="trailing" id="VuI-os-ZCf"/>
                             <constraint firstItem="L6e-tV-7CD" firstAttribute="leading" secondItem="D3V-gy-cpQ" secondAttribute="leading" id="kb0-NK-pZy"/>
+                            <constraint firstItem="GVG-mI-1r9" firstAttribute="top" secondItem="L6e-tV-7CD" secondAttribute="bottom" id="sCg-3F-RgX"/>
                             <constraint firstItem="L6e-tV-7CD" firstAttribute="top" secondItem="D3V-gy-cpQ" secondAttribute="top" id="z9L-G0-dEV"/>
                         </constraints>
                     </view>
@@ -127,7 +145,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="X6j-Ob-lVP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="6365" y="-800"/>
+            <point key="canvasLocation" x="6363.7681159420299" y="-800.22321428571422"/>
         </scene>
         <!--Conversations-->
         <scene sceneID="tne-QT-ifu">
