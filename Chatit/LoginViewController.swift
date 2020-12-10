@@ -68,7 +68,6 @@ class LoginViewController: UIViewController {
         guard let vc = storyboard?.instantiateViewController(identifier: "register") as? RegisterViewController else{
             return
         }
-        //        vc.navigationItem.largeTitleDisplayMode = .never
         navigationController?.pushViewController(vc, animated: true)
         
     }
@@ -171,7 +170,7 @@ extension LoginViewController: LoginButtonDelegate{
     }
     
     func loginButtonDidLogOut(_ loginButton: FBLoginButton) {
-        //No Operation
+        //No Operation as of now
     }
     
     
