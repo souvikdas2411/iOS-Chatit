@@ -1,0 +1,6 @@
+framework module Pods_Chatit {
+  umbrella header "Pods-Chatit-umbrella.h"
+
+  export *
+  module * { export * }
+}
