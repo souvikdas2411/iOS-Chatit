@@ -128,6 +128,8 @@ class RegisterViewController: UIViewController {
                         
                     }
                 })
+                ///CACHING USER DATA ON THE DEVICE
+                UserDefaults.standard.set(ee, forKey: "email")
                 self.navigationController?.popToRootViewController(animated: true)
             })
             

@@ -22,10 +22,9 @@ class ProfileViewController: UIViewController {
         super.viewDidLoad()
         
         spinner.show(in: view)
+        
         let safeText = UserDefaults.standard.string(forKey: "email")
         address.text = safeText
-        //        nameDisplay.text =  UserDefaults.standard.string(forKey: "first_name")
-        //        profileImg
         
         let safeEmail = DatabaseManager.safeEmail(emailAddress: safeText ?? " ")
         let fileName = safeEmail + "_profile_pic.png"

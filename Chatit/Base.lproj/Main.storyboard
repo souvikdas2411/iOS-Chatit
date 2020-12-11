@@ -129,6 +129,7 @@
                     <navigationItem key="navigationItem" title="Add people" id="Tdt-QW-3V0"/>
                     <connections>
                         <outlet property="searchBar" destination="L6e-tV-7CD" id="pgu-Xr-Aer"/>
+                        <outlet property="tableView" destination="GVG-mI-1r9" id="erC-lM-lpW"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="X6j-Ob-lVP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

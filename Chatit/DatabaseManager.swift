@@ -25,9 +25,6 @@ final class DatabaseManager{
     public let database = Database.database().reference()
     
     
-    
-    
-    
     //MARK: - HANDLING ACCOUNTS
     
     struct ChatAppUser{
@@ -74,9 +71,76 @@ final class DatabaseManager{
                 return
             }
             
+            ///THE FUNCTIONS BELOW ARE USED TO SAVE DATABASE COST WHEN NEW CONVERSATITON AND SEARCH IS TO BE USED
+            ///USES A STRING:STRING DICTIONARY
+            self.database.child("users").observeSingleEvent(of: .value, with: {snapshot in
+                if var usersCollection = snapshot.value as? [[String: String]] {
+                    ///Exists so append
+                    let newElement = [
+                        "name": user.firstName + " " + user.lastName,
+                        "email": user.safeEmail
+                    ]
+                    usersCollection.append(newElement)
+                    
+                    self.database.child("users").setValue(usersCollection, withCompletionBlock: { error, _ in
+                        guard error == nil else {
+                            completion(false)
+                            return
+                        }
+                        
+                        completion(true)
+                    })
+                }
+                else{
+                    ///Does not exists so create
+                    
+                    // create that array
+                    let newCollection: [[String: String]] = [
+                        [
+                            "name": user.firstName + " " + user.lastName,
+                            "email": user.safeEmail
+                        ]
+                    ]
+                    
+                    self.database.child("users").setValue(newCollection, withCompletionBlock: { error, _ in
+                        guard error == nil else {
+                            completion(false)
+                            return
+                        }
+                        
+                        completion(true)
+                    })
+                    
+                }
+                
+            })
             
             completion(true)
         })
+    }
+    
+    //MARK:- SEARCH
+    /// Gets all users from database
+    public func getAllUsers(completion: @escaping (Result<[[String: String]], Error>) -> Void) {
+        database.child("users").observeSingleEvent(of: .value, with: { snapshot in
+            guard let value = snapshot.value as? [[String: String]] else {
+                completion(.failure(DatabaseError.failedToFetch))
+                return
+            }
+            
+            completion(.success(value))
+        })
+    }
+    ///CREATING OUR OWN ERROR
+    public enum DatabaseError: Error {
+        case failedToFetch
+        
+        public var localizedDescription: String {
+            switch self {
+            case .failedToFetch:
+                return "failed"
+            }
+        }
     }
     
 }
