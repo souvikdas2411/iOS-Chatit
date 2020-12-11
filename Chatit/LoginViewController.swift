@@ -20,10 +20,8 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        spinner.show(in: view)
-//        GIDSignIn.sharedInstance()?.presentingViewController = self
-        
-//        let googleLoginButton = GIDSignInButton()
+        //        spinner.show(in: view)
+
         
         
         
@@ -36,12 +34,12 @@ class LoginViewController: UIViewController {
         view.addSubview(loginButton)
         
         //MARK:- HARDCODING GOOGLE BUTTON CUZ OF SOME ANCHOR PROBLEM
-//        googleLoginButton.frame =  CGRect(x: 125, y: 355, width: 50, height: 30)
-//        view.addSubview(googleLoginButton)
-       
+        //        googleLoginButton.frame =  CGRect(x: 125, y: 355, width: 50, height: 30)
+        //        view.addSubview(googleLoginButton)
+        
         
         loginButton.delegate = self
-//        googleLoginButton. = self
+        //        googleLoginButton. = self
         //Looks for single or multiple taps.
         let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
         
@@ -90,8 +88,10 @@ class LoginViewController: UIViewController {
             DispatchQueue.main.async {
                 self.spinner.dismiss()
             }
+            ///CACHING USER DATA ON THE DEVICE
+            UserDefaults.standard.set(e, forKey: "email")
+            
             self.navigationController?.popToRootViewController(animated: true)
-            //            self.navigationController?.dismiss(animated: true, completion: nil)
         })
         
         
@@ -122,33 +122,85 @@ extension LoginViewController: UITextFieldDelegate{
         return true
     }
 }
+
+//MARK:- HANDLING THE FACEBOOK LOGIN
 extension LoginViewController: LoginButtonDelegate{
+    
+    func loginButtonDidLogOut(_ loginButton: FBLoginButton) {
+        //No Operation as of now
+    }
+    
     func loginButton(_ loginButton: FBLoginButton, didCompleteWith result: LoginManagerLoginResult?, error: Error?) {
         guard let token = result?.token?.tokenString else {
             return
         }
         
-        let facebookRequest = FBSDKLoginKit.GraphRequest(graphPath: "me", parameters: ["fields":"email, name"], tokenString: token, version: nil, httpMethod: .get)
+        let facebookRequest = FBSDKLoginKit.GraphRequest(graphPath: "me",
+                                                         parameters: ["fields":
+                                                                        "email, first_name, last_name, picture.type(large), name"],
+                                                         tokenString: token,
+                                                         version: nil,
+                                                         httpMethod: .get)
         
-        facebookRequest.start(completionHandler: {_, result, error in
-            guard let result = result as? [String:Any], error == nil else{
-                print("Faled in fbRequest")
+        facebookRequest.start(completionHandler: { _, result, error in
+            guard let result = result as? [String: Any],
+                  error == nil else {
+                print("Failed to make facebook graph request")
                 return
             }
             
-            guard let userName =  result["name"] as? String, let email = result["email"] as? String else{
+            guard let fname = result["first_name"] as? String,
+                  let lname = result["last_name"] as? String,
+//                  let full_name = result["name"] as? String,
+                  let email = result["email"] as? String,
+                  let picture = result["picture"] as? [String: Any],
+                  let data = picture["data"] as? [String: Any],
+                  let pictureUrl = data["url"] as? String else {
+                
                 return
             }
-            let nameComponents = userName.components(separatedBy: " ")
-            //            guard nameComponents.count == 2 else{
-            //                return
-            //            }
-            let fname = nameComponents[0]
-            let lname = nameComponents[1]
+            ///CACHING USER DATA ON THE DEVICE
+            UserDefaults.standard.set(email, forKey: "email")
+//            UserDefaults.standard.set(fname, forKey: "first_name")
             
-            DatabaseManager.shared.userExists(with: email, completion: {exists in
-                if !exists{
-                    DatabaseManager.shared.insertUser(with: DatabaseManager.ChatAppUser(firstName: fname, lastName: lname, emailAddress: email))
+            DatabaseManager.shared.userExists(with: email, completion: { exists in
+                if !exists {
+                    let chatUser = DatabaseManager.ChatAppUser(firstName: fname,
+                                                               lastName: lname,
+                                                               emailAddress: email)
+                    DatabaseManager.shared.insertUser(with: chatUser, completion: { success in
+                        if success {
+                            
+                            guard let url = URL(string: pictureUrl) else {
+                                return
+                            }
+                            
+                            print("Downloading data from facebook image")
+                            
+                            ///Was prolly missing the statement below for the data bug
+                            URLSession.shared.dataTask(with: url, completionHandler: { data, _,_ in
+                                guard let data = data else {
+                                    print("Failed to get data from facebook")
+                                    return
+                                }
+                                
+                                print("got data from FB, uploading...")
+                                
+                                ///SOMEHOW MANAGED TO BREAK THE CODE data: NOW SOLVED
+                                let filename = chatUser.profilePictureFileName
+                                StorageManager.shared.uploadProfilePicture(with: data, fileName: filename, completion: { result in
+                                    switch result {
+                                    case .success(let downloadUrl):
+                                        UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
+                                        print(downloadUrl)
+                                    case .failure(let error):
+                                        print("Storage maanger error: \(error)")
+                                    }
+                                })
+                            }).resume()
+                            ///The resume() above tells the URLSession to start
+                        }
+                    })
                 }
             })
             
@@ -168,10 +220,5 @@ extension LoginViewController: LoginButtonDelegate{
         
         
     }
-    
-    func loginButtonDidLogOut(_ loginButton: FBLoginButton) {
-        //No Operation as of now
-    }
-    
     
 }

@@ -12,6 +12,14 @@ import FirebaseDatabase
 
 
 final class DatabaseManager{
+    
+    
+    
+    static func safeEmail(emailAddress: String) -> String{
+        var safeEmail = emailAddress.replacingOccurrences(of: "@", with: "(at)")
+        safeEmail = safeEmail.replacingOccurrences(of: ".", with: "(dot)")
+        return safeEmail
+    }
     static let shared =  DatabaseManager()
     
     public let database = Database.database().reference()
@@ -27,11 +35,14 @@ final class DatabaseManager{
         let lastName : String
         let emailAddress : String
         //let password : String
-        //let profilePictureUrl : String
+        
         var safeEmail : String {
             var safeEmail = emailAddress.replacingOccurrences(of: "@", with: "(at)")
             safeEmail = safeEmail.replacingOccurrences(of: ".", with: "(dot)")
             return safeEmail
+        }
+        var profilePictureFileName : String{
+            return "\(safeEmail)_profile_pic.png"
         }
     }
     public func userExists(with email:String, completion: @escaping((Bool) -> Void)){
@@ -47,7 +58,7 @@ final class DatabaseManager{
         completion(true)
     }
     
-    public func insertUser(with user: ChatAppUser){
+    public func insertUser(with user: ChatAppUser, completion: @escaping (Bool) -> Void){
         
         print("1")
         database.child(user.safeEmail).setValue([
@@ -56,15 +67,16 @@ final class DatabaseManager{
             "last_name": user.lastName
             //            "email_address": user.emailAddress
             
-        ]){(error:Error?, ref:DatabaseReference) in
-            if let error = error {
-                print("2")
-                print("Data could not be saved: \(error).")
-            } else {
-                print("3")
-                print("Data saved successfully!")
+        ], withCompletionBlock: {error, _ in
+            guard error == nil else{
+                print("Failed to write DATABASEMANAGER")
+                completion(false)
+                return
             }
-        }
+            
+            
+            completion(true)
+        })
     }
     
 }

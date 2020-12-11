@@ -9,6 +9,7 @@ import UIKit
 import FirebaseAuth
 import FirebaseDatabase
 import JGProgressHUD
+import FirebaseStorage
 
 class RegisterViewController: UIViewController {
     
@@ -84,7 +85,10 @@ class RegisterViewController: UIViewController {
             tap()
             return
         }
+        
         self.spinner.show(in: view)
+        
+        
         DatabaseManager.shared.userExists(with: ee, completion: {exists in
             guard !exists else{
                 return
@@ -102,8 +106,28 @@ class RegisterViewController: UIViewController {
                     self.tap2()
                     return
                 }
-                
-                DatabaseManager.shared.insertUser(with: DatabaseManager.ChatAppUser(firstName: fn, lastName: ln, emailAddress: ee))
+                let chatUser = DatabaseManager.ChatAppUser(firstName: fn, lastName: ln, emailAddress: ee)
+                DatabaseManager.shared.insertUser(with: chatUser, completion: {success in
+                    if(success){
+                        ///UPLOADS IMAGE IF DATABASE WRITING IS SUCCESSFULL
+                        guard let image = self.img.image, let data = image.pngData() else{
+                            
+                            return
+                        }
+                        let fileName = chatUser.profilePictureFileName
+                        StorageManager.shared.uploadProfilePicture(with: data, fileName: fileName, completion: { result in
+                            switch result{
+                            case .success(let downloadUrl):
+                                ///Caching to sytem to not redundantly go to firebase for searching
+                                UserDefaults.standard.set(downloadUrl, forKey: "profile_picture_url")
+                                print(downloadUrl)
+                            case .failure(let downloadUrl):
+                                print("Storage manager error from register view")
+                            }
+                        })
+                        
+                    }
+                })
                 self.navigationController?.popToRootViewController(animated: true)
             })
             

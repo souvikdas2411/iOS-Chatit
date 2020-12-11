@@ -3,7 +3,6 @@
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17505"/>
-        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -24,22 +23,11 @@
                                     <constraint firstAttribute="width" constant="96" id="F94-sI-015"/>
                                 </constraints>
                             </imageView>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="Address" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="IWr-EQ-mDD">
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="IWr-EQ-mDD">
                                 <rect key="frame" x="20" y="266" width="374" height="32"/>
-                                <color key="backgroundColor" name="outgoingMessageBackground"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="32" id="nf0-Vc-5VO"/>
-                                </constraints>
-                                <color key="textColor" systemColor="labelColor"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                <dataDetectorType key="dataDetectorTypes" link="YES"/>
-                            </textView>
-                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" text="Name" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="LWt-UP-QiL">
-                                <rect key="frame" x="20" y="308" width="374" height="32"/>
-                                <color key="backgroundColor" name="outgoingMessageBackground"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="32" id="0v0-nw-4ji"/>
+                                    <constraint firstAttribute="height" constant="32" id="60e-nM-hRa"/>
+                                    <constraint firstAttribute="width" constant="374" id="HFd-BS-naP"/>
                                 </constraints>
                                 <color key="textColor" systemColor="labelColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -47,7 +35,7 @@
                                 <dataDetectorType key="dataDetectorTypes" link="YES"/>
                             </textView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iZj-8W-rmV">
-                                <rect key="frame" x="285" y="360" width="109" height="30"/>
+                                <rect key="frame" x="152.5" y="846" width="109" height="30"/>
                                 <state key="normal" title="Reset password">
                                     <color key="titleColor" systemColor="systemRedColor"/>
                                 </state>
@@ -57,15 +45,13 @@
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
                             <constraint firstItem="fag-zc-SCX" firstAttribute="centerX" secondItem="xfb-1z-dws" secondAttribute="centerX" id="05H-vV-XeN"/>
-                            <constraint firstItem="xfb-1z-dws" firstAttribute="trailing" secondItem="IWr-EQ-mDD" secondAttribute="trailing" constant="20" id="85z-Um-f2P"/>
-                            <constraint firstItem="LWt-UP-QiL" firstAttribute="top" secondItem="IWr-EQ-mDD" secondAttribute="bottom" constant="10" id="QEo-nv-Rqa"/>
+                            <constraint firstItem="iZj-8W-rmV" firstAttribute="centerX" secondItem="xfb-1z-dws" secondAttribute="centerX" id="Od9-O9-gMZ"/>
+                            <constraint firstItem="IWr-EQ-mDD" firstAttribute="top" secondItem="fag-zc-SCX" secondAttribute="bottom" constant="20" id="QhD-1s-kmu"/>
                             <constraint firstItem="fag-zc-SCX" firstAttribute="top" secondItem="xfb-1z-dws" secondAttribute="top" constant="10" id="TAd-tS-GMv"/>
-                            <constraint firstItem="IWr-EQ-mDD" firstAttribute="leading" secondItem="xfb-1z-dws" secondAttribute="leading" constant="20" id="a8O-qt-S4u"/>
-                            <constraint firstItem="xfb-1z-dws" firstAttribute="trailing" secondItem="LWt-UP-QiL" secondAttribute="trailing" constant="20" id="aWU-nJ-ltq"/>
-                            <constraint firstItem="xfb-1z-dws" firstAttribute="trailing" secondItem="iZj-8W-rmV" secondAttribute="trailing" constant="20" id="pyG-bV-kF4"/>
-                            <constraint firstItem="iZj-8W-rmV" firstAttribute="top" secondItem="LWt-UP-QiL" secondAttribute="bottom" constant="20" id="ssM-Fs-6ss"/>
-                            <constraint firstItem="IWr-EQ-mDD" firstAttribute="top" secondItem="fag-zc-SCX" secondAttribute="bottom" constant="20" id="vz3-sa-dsQ"/>
-                            <constraint firstItem="LWt-UP-QiL" firstAttribute="leading" secondItem="xfb-1z-dws" secondAttribute="leading" constant="20" id="wlc-P9-vKN"/>
+                            <constraint firstItem="xfb-1z-dws" firstAttribute="trailing" secondItem="IWr-EQ-mDD" secondAttribute="trailing" constant="20" id="Xfx-7z-sjA"/>
+                            <constraint firstAttribute="bottom" secondItem="iZj-8W-rmV" secondAttribute="bottom" constant="20" id="aYT-cO-M2y"/>
+                            <constraint firstItem="IWr-EQ-mDD" firstAttribute="leading" secondItem="xfb-1z-dws" secondAttribute="leading" constant="20" id="fJk-Un-3j6"/>
+                            <constraint firstItem="IWr-EQ-mDD" firstAttribute="centerX" secondItem="xfb-1z-dws" secondAttribute="centerX" id="kID-Wh-NTb"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Profile" id="gG3-MA-JPi">
@@ -76,6 +62,8 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="address" destination="IWr-EQ-mDD" id="WIc-Ga-E7J"/>
+                        <outlet property="profileImg" destination="fag-zc-SCX" id="K8K-jn-NJT"/>
                         <outlet property="signOut" destination="ype-ql-4e9" id="QOt-vg-dyX"/>
                     </connections>
                 </viewController>
@@ -505,9 +493,6 @@
         <image name="person.circle" catalog="system" width="128" height="121"/>
         <image name="plus" catalog="system" width="128" height="113"/>
         <image name="scribble" catalog="system" width="128" height="118"/>
-        <namedColor name="outgoingMessageBackground">
-            <color red="0.20399998128414154" green="0.77999997138977051" blue="0.34899997711181641" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-        </namedColor>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
