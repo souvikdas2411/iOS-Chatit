@@ -1,4 +1,4 @@
-//
+//I WOULD DIE BEFORE I DIRECTLY CLONE A GIT AND SAY THAT IT IS MY CODE - SOUVIK DAS
 //  ViewController.swift
 //  Chatit
 //
@@ -37,22 +37,32 @@ class ViewController: UIViewController {
     }
     
     //MARK:- REALTIME FETCHING OF CONVERSATIONS AND HENCE UPDATING THE conversations ARRAY
-    private func startListeningForConversations(){
-        guard let email = UserDefaults.standard.string(forKey: "email") else{
+    private func startListeningForConversations() {
+        guard let email = UserDefaults.standard.value(forKey: "email") as? String else {
             return
         }
+
+        print("starting conversation fetch...")
+
         let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
-        DatabaseManager.shared.getAllConversations(for: email, completion: {[weak self] result in
-            switch result{
+
+        DatabaseManager.shared.getAllConversations(for: safeEmail, completion: { [weak self] result in
+            switch result {
             case .success(let conversations):
-                guard !conversations.isEmpty else{
+                
+                guard !conversations.isEmpty else {
+                    print("successfully got conversation models empty")
                     return
                 }
+                print("successfully got conversation models")
                 self?.conversations = conversations
+
+                DispatchQueue.main.async {
+                    self?.table.reloadData()
+                }
             case .failure(let error):
-                print("Failed to get conversations. Acknowledment from ViewController")
+                print("failed to get convos: \(error)")
             }
-            
         })
     }
     
@@ -106,13 +116,13 @@ class ViewController: UIViewController {
 //MARK:- EXTENSIONS/Conversations table
 extension ViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return conversations.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = table.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.textLabel?.text = "Hello World"
-        cell.accessoryType = .disclosureIndicator
+        let cell = table.dequeueReusableCell(withIdentifier: ConversationTableViewCell.identifier, for: indexPath) as! ConversationTableViewCell
+        cell.configure(with: conversations[indexPath.row])
+//        cell.accessoryType = .disclosureIndicator
         return cell
     }
     
@@ -122,8 +132,14 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource{
                 return
         }
         vc.navigationItem.largeTitleDisplayMode = .never
+        vc.otherUserEmail = conversations[indexPath.row].otherUserEmail
+        vc.title = conversations[indexPath.row].name
         navigationController?.pushViewController(vc, animated: true)
         
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 120
     }
     
 }

@@ -189,11 +189,12 @@ extension DatabaseManager{
             let newConversationsData: [String : Any] = [
                 "id": conversationId,
                 "other_user_email": otherUserEmail,
+                "name": name,
                 "latest_message": [
                     "date": dateString,
                     "is_read": false,
-                    "latest_message": message,
-                    "name": name
+                    "message": message,
+                    
                 ]
             ]
             if var conversations = userNode["conversations"] as? [[String: Any]] {
@@ -289,23 +290,27 @@ extension DatabaseManager{
     
     ///GET ALL CONVO FOR EMAIL
     public func getAllConversations(for email: String, completion: @escaping (Result<[Conversation], Error>) -> Void){
+        
+        ///ATTACHING LISTENER FOR NEW CONVOS
         database.child("\(email)/conversations").observe(.value, with: { snapshot in
             guard let value = snapshot.value as? [[String: Any]] else{
                 completion(.failure(DatabaseError.failedToFetch))
                 return
             }
-
+            
+            ///converting dictionary to model check conversationsmodel,swift for model info
             let conversations: [Conversation] = value.compactMap({ dictionary in
                 guard let conversationId = dictionary["id"] as? String,
-                    let name = dictionary["name"] as? String,
-                    let otherUserEmail = dictionary["other_user_email"] as? String,
-                    let latestMessage = dictionary["latest_message"] as? [String: Any],
-                    let date = latestMessage["date"] as? String,
-                    let message = latestMessage["message"] as? String,
-                    let isRead = latestMessage["is_read"] as? Bool else {
-                        return nil
+                      let name = dictionary["name"] as? String,
+                      let otherUserEmail = dictionary["other_user_email"] as? String,
+                      let latestMessage = dictionary["latest_message"] as? [String: Any],
+                      let date = latestMessage["date"] as? String,
+                      let message = latestMessage["message"] as? String,
+                      let isRead = latestMessage["is_read"] as? Bool
+                else {
+                    return nil
                 }
-
+                
                 let latestMmessageObject = LatestMessage(date: date,
                                                          text: message,
                                                          isRead: isRead)
@@ -314,7 +319,7 @@ extension DatabaseManager{
                                     otherUserEmail: otherUserEmail,
                                     latestMessage: latestMmessageObject)
             })
-
+            
             completion(.success(conversations))
         })
     }
