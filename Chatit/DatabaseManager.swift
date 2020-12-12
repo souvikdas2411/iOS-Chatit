@@ -197,6 +197,7 @@ extension DatabaseManager{
                     
                 ]
             ]
+            print("usernode == \(userNode)")
             if var conversations = userNode["conversations"] as? [[String: Any]] {
                 ///conversations array exists for current user i.e user has at least one conversation
                 conversations.append(newConversationsData)

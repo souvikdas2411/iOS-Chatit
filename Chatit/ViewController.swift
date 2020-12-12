@@ -1,4 +1,4 @@
-//I WOULD DIE BEFORE I DIRECTLY CLONE A GIT AND SAY THAT IT IS MY CODE - SOUVIK DAS
+///I WOULD DIE BEFORE I DIRECTLY CLONE A GIT AND SAY THAT IT IS MY CODE - SOUVIK DAS
 //  ViewController.swift
 //  Chatit
 //
@@ -139,7 +139,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource{
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 120
+        return 85
     }
     
 }
