@@ -70,10 +70,12 @@ extension NewConversationViewController: UITableViewDelegate, UITableViewDataSou
 //            self?.completion?(targerUserData)
 //
 //        })
-        navigationController?.dismiss(animated: true, completion: {[weak self] in
-            self?.completion?(targerUserData)
-
-        })
+        self.completion?(targerUserData)
+//        navigationController?.popToRootViewController(animated: true)
+//        navigationController?.dismiss(animated: true, completion: {[weak self] in
+//            self?.completion?(targerUserData)
+//
+//        })
 //        dismiss(animated: true, completion: {[weak self] in
 //            self?.completion?(targerUserData)
 //        })

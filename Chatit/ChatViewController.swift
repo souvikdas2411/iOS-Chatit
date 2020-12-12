@@ -8,6 +8,7 @@
 import UIKit
 import MessageKit
 import InputBarAccessoryView
+import FirebaseAuth
 
 struct Message: MessageType{
     var sender: SenderType
@@ -17,6 +18,33 @@ struct Message: MessageType{
     var sentDate: Date
     
     var kind: MessageKind
+}
+
+extension MessageKind{
+    var messageKindString: String{
+        switch self {
+        case .text(_):
+            return "text"
+        case .attributedText(_):
+            return "attributed_text"
+        case .photo(_):
+            return "photo"
+        case .video(_):
+            return "video"
+        case .location(_):
+            return "location"
+        case .emoji(_):
+            return "emoji"
+        case .audio(_):
+            return "audio"
+        case .contact(_):
+            return "contact"
+        case .linkPreview(_):
+            return "link_preview"
+        case .custom(_):
+            return "custom"
+        }
+    }
 }
 
 struct Sender: SenderType{
@@ -33,20 +61,27 @@ struct Sender: SenderType{
 
 class ChatViewController: MessagesViewController {
     
+    public static let dateFormatter: DateFormatter = {
+        let formattre = DateFormatter()
+        formattre.dateStyle = .medium
+        formattre.timeStyle = .long
+        formattre.locale = .current
+        return formattre
+    }()
+    
     public var otherUserEmail = ""
     public var isNewConversation = false
     
-    
     private var messages = [Message]()
-    private let selfSender = Sender(photoURL: "", senderId: "1", displayName: "Souvik's Mac")
+    private let selfSender = Sender(photoURL: "", senderId: (UserDefaults.standard.string(forKey: "email") ?? FirebaseAuth.Auth.auth().currentUser?.email) ?? " ", displayName: "Me")
     
+    //MARK:- VIEW DID LOAD
     override func viewDidLoad() {
         super.viewDidLoad()
         
         print(otherUserEmail)
-//        messages.append(Message(sender: selfSender, messageId: "1", sentDate: Date(), kind: .text("From mac")))
-//        messages.append(Message(sender: selfSender, messageId: "1", sentDate: Date(), kind: .text("From mac")))
-
+        print(isNewConversation)
+        
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
@@ -59,20 +94,36 @@ class ChatViewController: MessagesViewController {
         super.viewDidAppear(animated)
         messageInputBar.inputTextView.becomeFirstResponder()
     }
-
 }
 //MARK:-HANDLING ACCESSORY BAR/TEXT BAR DELEGATE
 extension ChatViewController: InputBarAccessoryViewDelegate{
     func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
-        guard !text.replacingOccurrences(of: " ", with: "").isEmpty else{
-            return
-        }
-        ///SENDING MESSAGES IF NOT EMPTY STRING
+        ///SENDING MESSAGES IF NOT EMPTY STRING, UPDATE: INPUT BAR DOESNT ALLOW EMPTY STRINGS
         if isNewConversation{
             ///CREATING NEW CONVERSATION IN DATABASE
+            let uuid = UUID().uuidString //GENERATING RANDOM MESSAGEID
+            let message = Message(sender: selfSender, messageId: uuid, sentDate: Date(), kind: .text(text))
+            print(text)
+            DatabaseManager.shared.createNewConversation(with: otherUserEmail, firstMessage: message,completion: {[weak self] success in
+                if success{
+                    print("message sent")
+                    self?.isNewConversation = false
+//                    let newConversationId = "conversation_\(mmessage.messageId)"
+//                    self?.conversationId = newConversationId
+//                    self?.listenForMessages(id: newConversationId, shouldScrollToBottom: true)
+                    self?.messageInputBar.inputTextView.text = nil
+                }
+                else{
+                    print("failed to send message")
+                }
+            })
+            
         }
         else{
+            
             ///CONTINUE WITH THE EXISTING CONVERSATION
+            
+            
         }
     }
 }

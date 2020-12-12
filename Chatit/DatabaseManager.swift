@@ -8,12 +8,7 @@
 import Foundation
 import FirebaseDatabase
 
-
-
-
 final class DatabaseManager{
-    
-    
     
     static func safeEmail(emailAddress: String) -> String{
         var safeEmail = emailAddress.replacingOccurrences(of: "@", with: "(at)")
@@ -143,13 +138,151 @@ final class DatabaseManager{
         }
     }
     
+    
 }
 //MARK:- SENDING MESSAGES
 extension DatabaseManager{
     
     ///CREATE A NEW CONVO
-    public func createNewConversation(with otherUserEmail: String, firstMessage: Message, completion: @escaping (Bool) -> Void){
+    public func createNewConversation(with otherUserEmail: String, firstMessage: Message,completion: @escaping (Bool) -> Void){
+        guard let currentEmail = UserDefaults.standard.string(forKey: "email") else {
+            completion(false)
+            return
+        }
+        let safeEmail = DatabaseManager.safeEmail(emailAddress: currentEmail)
+        let ref = database.child("\(safeEmail)")
+        ref.observeSingleEvent(of: .value, with: {snapshot in
+            guard var userNode = snapshot.value as? [String:Any] else{
+                completion(false)
+                return
+            }
+            
+            let messageDate = firstMessage.sentDate
+            let dateString = ChatViewController.dateFormatter.string(from: messageDate)
+            var message = ""
+            let conversationId = "conversation_\(firstMessage.messageId)"
+            
+            switch firstMessage.kind{
+            case .text(let messageText):
+                message = messageText
+            case .attributedText(_):
+                break
+            case .photo(_):
+                break
+            case .video(_):
+                break
+            case .location(_):
+                break
+            case .emoji(_):
+                break
+            case .audio(_):
+                break
+            case .contact(_):
+                break
+            case .linkPreview(_):
+                break
+            case .custom(_):
+                break
+            }
+            
+            ///Conversation schema
+            let newConversationsData: [String : Any] = [
+                "id": conversationId,
+                "other_user_email": otherUserEmail,
+                "latest_message": [
+                    "date": dateString,
+                    "is_read": false,
+                    "latest_message": message
+                ]
+            ]
+            if var conversations = userNode["conversations"] as? [[String: Any]] {
+                ///conversations array exists for current user i.e user has at least one conversation
+                conversations.append(newConversationsData)
+                ///appending new data above so in the below statement re setting the usernode to updated conversations
+                userNode["conversations"] = conversations
+                ref.setValue(userNode, withCompletionBlock: { [weak self] error,_ in
+                    guard error == nil else{
+                        completion(false)
+                        return
+                    }
+                    self?.finishCreatingConversation(conversationID: "conversation_\(firstMessage.messageId)", firstMessage: firstMessage, completion: completion)
+                })
+            }
+            else{
+                ///create new conversations array
+                userNode["conversations"] = [
+                    newConversationsData
+                ]
+                ref.setValue(userNode, withCompletionBlock: { [weak self] error,_ in
+                    guard error == nil else{
+                        completion(false)
+                        return
+                    }
+                    self?.finishCreatingConversation(conversationID: "conversation_\(firstMessage.messageId)", firstMessage: firstMessage, completion: completion)
+                })
+                
+            }
+        })
+        self.finishCreatingConversation(conversationID: "conversation_\(firstMessage.messageId)", firstMessage: firstMessage, completion: completion)
+    }
+    
+    
+    private func finishCreatingConversation(conversationID: String, firstMessage: Message, completion: @escaping (Bool)->Void){
         
+        var message = ""
+        let messageDate = firstMessage.sentDate
+        let dateString = ChatViewController.dateFormatter.string(from: messageDate)
+        
+        switch firstMessage.kind{
+        case .text(let messageText):
+            message = messageText
+        case .attributedText(_):
+            break
+        case .photo(_):
+            break
+        case .video(_):
+            break
+        case .location(_):
+            break
+        case .emoji(_):
+            break
+        case .audio(_):
+            break
+        case .contact(_):
+            break
+        case .linkPreview(_):
+            break
+        case .custom(_):
+            break
+        }
+        
+        guard let currentUserEmail = UserDefaults.standard.string(forKey: "email") else{
+            completion(false)
+            return
+        }
+        let collectionMessage: [String: Any] = [
+            "id":firstMessage.messageId,
+            "type":firstMessage.kind.messageKindString,
+            "content": message,
+            "date":dateString,
+            "sender_email": currentUserEmail,
+            "is_read":false
+            
+        ]
+        
+        let value: [String: Any] = [
+            "messages": [
+                message
+            ]
+        ]
+        
+        database.child("\(conversationID)").setValue(value, withCompletionBlock: {error, _ in
+            guard error == nil else{
+                completion(false)
+                return
+            }
+            completion(true)
+        })
     }
     
     ///GET ALL CONVO FOR EMAIL
