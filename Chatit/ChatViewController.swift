@@ -55,6 +55,18 @@ class ChatViewController: MessagesViewController {
     }
 
 }
+//MARK:-HANDLING ACCESSORY BAR/TEXT BAR DELEGATE
+extension ChatViewController: InputBarAccessoryViewDelegate{
+    func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
+        guard !text.replacingOccurrences(of: " ", with: "").isEmpty else{
+            return
+        }
+        ///SENDING MESSAGES IF NOT EMPTY STRING
+    }
+}
+
+
+//MARK:- HANDLING CHAT DELEGATES
 extension ChatViewController: MessagesDataSource, MessagesLayoutDelegate, MessagesDisplayDelegate{
     func currentSender() -> SenderType {
         return selfSender
