@@ -44,14 +44,20 @@ class ChatViewController: MessagesViewController {
         super.viewDidLoad()
         
         print(otherUserEmail)
-        messages.append(Message(sender: selfSender, messageId: "1", sentDate: Date(), kind: .text("From mac")))
-        messages.append(Message(sender: selfSender, messageId: "1", sentDate: Date(), kind: .text("From mac")))
+//        messages.append(Message(sender: selfSender, messageId: "1", sentDate: Date(), kind: .text("From mac")))
+//        messages.append(Message(sender: selfSender, messageId: "1", sentDate: Date(), kind: .text("From mac")))
 
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
         
         messageInputBar.delegate = self
+        
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        messageInputBar.inputTextView.becomeFirstResponder()
     }
 
 }
@@ -62,6 +68,12 @@ extension ChatViewController: InputBarAccessoryViewDelegate{
             return
         }
         ///SENDING MESSAGES IF NOT EMPTY STRING
+        if isNewConversation{
+            ///CREATING NEW CONVERSATION IN DATABASE
+        }
+        else{
+            ///CONTINUE WITH THE EXISTING CONVERSATION
+        }
     }
 }
 

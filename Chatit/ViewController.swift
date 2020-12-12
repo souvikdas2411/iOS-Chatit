@@ -4,7 +4,7 @@
 //
 //  Created by Souvik Das on 08/12/20.
 //
-
+///THIS PROJECT MIGHT BE SUBJECT TO CYCLES BECAUSE OF WEAK SELF, FUNCTIONALLY IT WILL PERFORM JUST LIKE ANY OTHER APPLICATION
 import UIKit
 import FirebaseAuth
 import JGProgressHUD
@@ -32,7 +32,7 @@ class ViewController: UIViewController {
 
     }
     
-    //MARK:- ADD
+    //MARK:- ADDING NEW CONVERSATION
     @IBAction func didTapApp(){
         guard let vc = storyboard?.instantiateViewController(identifier: "new") as? NewConversationViewController else{
                 return
@@ -48,6 +48,7 @@ class ViewController: UIViewController {
         }
         vc.navigationItem.largeTitleDisplayMode = .never
         vc.otherUserEmail = result["email"] ?? ""
+        vc.isNewConversation = true
         vc.title = result["name"]
         navigationController?.pushViewController(vc, animated: true)
     }

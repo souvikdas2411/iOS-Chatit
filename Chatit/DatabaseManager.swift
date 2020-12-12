@@ -71,7 +71,7 @@ final class DatabaseManager{
                 return
             }
             
-            ///THE FUNCTIONS BELOW ARE USED TO SAVE DATABASE COST WHEN NEW CONVERSATITON AND SEARCH IS TO BE USED
+            ///THE FUNCTIONS BELOW ARE USED TO SAVE DATABASE COST WHEN NEW USERS ARE TO BE SEARCHED
             ///USES A STRING:STRING DICTIONARY
             self.database.child("users").observeSingleEvent(of: .value, with: {snapshot in
                 if var usersCollection = snapshot.value as? [[String: String]] {
@@ -143,6 +143,30 @@ final class DatabaseManager{
         }
     }
     
+}
+//MARK:- SENDING MESSAGES
+extension DatabaseManager{
+    
+    ///CREATE A NEW CONVO
+    public func createNewConversation(with otherUserEmail: String, firstMessage: Message, completion: @escaping (Bool) -> Void){
+        
+    }
+    
+    ///GET ALL CONVO FOR EMAIL
+    public func getAllConversations(for email: String, completion: @escaping (Result<String, Error>) -> Void){
+        
+    }
+    
+    //
+    public func getAllMessageForConversation(with id: String, completion: @escaping (Result<String, Error>) -> Void){
+        
+    }
+    
+    
+    ///SENDING MESSAGES IN GENERAL
+    public func sendMessage(toConversation: String, message: Message, completion: @escaping (Bool) -> Void){
+        
+    }
 }
 
 
