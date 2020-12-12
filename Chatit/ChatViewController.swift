@@ -104,7 +104,7 @@ extension ChatViewController: InputBarAccessoryViewDelegate{
             let uuid = UUID().uuidString //GENERATING RANDOM MESSAGEID
             let message = Message(sender: selfSender, messageId: uuid, sentDate: Date(), kind: .text(text))
             print(text)
-            DatabaseManager.shared.createNewConversation(with: otherUserEmail, firstMessage: message,completion: {[weak self] success in
+            DatabaseManager.shared.createNewConversation(with: otherUserEmail, firstMessage: message, name: self.title ?? "Error 404", completion: {[weak self] success in
                 if success{
                     print("message sent")
                     self?.isNewConversation = false

@@ -16,6 +16,8 @@ class ViewController: UIViewController {
     @IBOutlet var noConv: UIImageView!
     
     private let spinner = JGProgressHUD(style: .extraLight)
+    
+    private var conversations = [Conversation]()
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,13 +25,35 @@ class ViewController: UIViewController {
         
         table.delegate = self
         table.dataSource = self
+        table.register(ConversationTableViewCell.self, forCellReuseIdentifier: ConversationTableViewCell.identifier)
         fetchConversations()
+        startListeningForConversations()
         
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         validateAuth()
 
+    }
+    
+    //MARK:- REALTIME FETCHING OF CONVERSATIONS AND HENCE UPDATING THE conversations ARRAY
+    private func startListeningForConversations(){
+        guard let email = UserDefaults.standard.string(forKey: "email") else{
+            return
+        }
+        let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
+        DatabaseManager.shared.getAllConversations(for: email, completion: {[weak self] result in
+            switch result{
+            case .success(let conversations):
+                guard !conversations.isEmpty else{
+                    return
+                }
+                self?.conversations = conversations
+            case .failure(let error):
+                print("Failed to get conversations. Acknowledment from ViewController")
+            }
+            
+        })
     }
     
     //MARK:- ADDING NEW CONVERSATION
