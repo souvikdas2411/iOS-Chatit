@@ -22,7 +22,7 @@
 		4F19B65A257FE5FD00C3E4ED /* VideoPlayerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F19B659257FE5FD00C3E4ED /* VideoPlayerViewController.swift */; };
 		4F2723862582A29900827A4D /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F2723852582A29900827A4D /* ChatViewController.swift */; };
 		4F27238925839A4C00827A4D /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F27238825839A4C00827A4D /* StorageManager.swift */; };
-		4F37F29C258229B000AA4D04 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4F37F29B258229B000AA4D04 /* GoogleService-Info.plist */; };
+		4F27238E2583FA9F00827A4D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4F27238D2583FA9F00827A4D /* GoogleService-Info.plist */; };
 		4F5C8EC025813A8D005BDA00 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5C8EBF25813A8D005BDA00 /* DatabaseManager.swift */; };
 /* End PBXBuildFile section */
 
@@ -44,7 +44,7 @@
 		4F19B659257FE5FD00C3E4ED /* VideoPlayerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoPlayerViewController.swift; sourceTree = "<group>"; };
 		4F2723852582A29900827A4D /* ChatViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
 		4F27238825839A4C00827A4D /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
-		4F37F29B258229B000AA4D04 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		4F27238D2583FA9F00827A4D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		4F5C8EBF25813A8D005BDA00 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		940AA037DB58F90E3CCFD9D8 /* Pods-Chatit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chatit.debug.xcconfig"; path = "Target Support Files/Pods-Chatit/Pods-Chatit.debug.xcconfig"; sourceTree = "<group>"; };
 		EA51AC1DDCB16819E4BB42BA /* Pods_Chatit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Chatit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -84,7 +84,7 @@
 		4F19B632257FE40C00C3E4ED /* Chatit */ = {
 			isa = PBXGroup;
 			children = (
-				4F37F29B258229B000AA4D04 /* GoogleService-Info.plist */,
+				4F27238D2583FA9F00827A4D /* GoogleService-Info.plist */,
 				4F19B648257FE41600C3E4ED /* Chatit.entitlements */,
 				4F19B633257FE40C00C3E4ED /* AppDelegate.swift */,
 				4F19B635257FE40C00C3E4ED /* SceneDelegate.swift */,
@@ -184,7 +184,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4F19B640257FE40D00C3E4ED /* LaunchScreen.storyboard in Resources */,
-				4F37F29C258229B000AA4D04 /* GoogleService-Info.plist in Resources */,
+				4F27238E2583FA9F00827A4D /* GoogleService-Info.plist in Resources */,
 				4F19B63D257FE40D00C3E4ED /* Assets.xcassets in Resources */,
 				4F19B63B257FE40C00C3E4ED /* Main.storyboard in Resources */,
 			);

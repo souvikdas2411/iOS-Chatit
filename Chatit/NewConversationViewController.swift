@@ -9,7 +9,7 @@ import UIKit
 import JGProgressHUD
 class NewConversationViewController: UIViewController {
     
-//    public var completion: ((SearchResult) -> (Void))?
+    public var completion: (([String: String]) -> (Void))?
     
     private let spinner = JGProgressHUD(style: .extraLight)
     
@@ -27,11 +27,12 @@ class NewConversationViewController: UIViewController {
         
         tableView.delegate = self
         tableView.dataSource = self
+        
         //Looks for single or multiple taps.
         let tap = UITapGestureRecognizer(target: self, action: #selector(UIInputViewController.dismissKeyboard))
         
         //Uncomment the line below if you want the tap not not interfere and cancel other interactions.
-        //tap.cancelsTouchesInView = false
+        tap.cancelsTouchesInView = false
         
         view.addGestureRecognizer(tap)
         
@@ -45,7 +46,7 @@ class NewConversationViewController: UIViewController {
     }
     
 }
-
+//MARK:- Table View delegate
 extension NewConversationViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return results.count
@@ -61,16 +62,27 @@ extension NewConversationViewController: UITableViewDelegate, UITableViewDataSou
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        print(results)
         // start conversation
+        let targerUserData = results[indexPath.row]
         
+//        navigationController?.popToRootViewController(animated: true, completion:{[weak self] in
+//            self?.completion?(targerUserData)
+//
+//        })
+        navigationController?.dismiss(animated: true, completion: {[weak self] in
+            self?.completion?(targerUserData)
+
+        })
+//        dismiss(animated: true, completion: {[weak self] in
+//            self?.completion?(targerUserData)
+//        })
         
         
     }
-    
-    //    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    //        return 90
-    //    }
 }
+
+//MARK:- Search bar delegate
 extension NewConversationViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {

@@ -10,6 +10,7 @@ import FirebaseAuth
 import JGProgressHUD
 class ViewController: UIViewController {
     
+    
     @IBOutlet var profile: UIBarButtonItem!
     @IBOutlet var table: UITableView!
     @IBOutlet var noConv: UIImageView!
@@ -36,6 +37,18 @@ class ViewController: UIViewController {
         guard let vc = storyboard?.instantiateViewController(identifier: "new") as? NewConversationViewController else{
                 return
         }
+        vc.completion = {[weak self] result in
+            self?.createNewConversation(result: result)
+        }
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    private func createNewConversation(result: [String: String]) {
+        guard let vc = storyboard?.instantiateViewController(identifier: "chat") as? ChatViewController else{
+            return
+        }
+        vc.navigationItem.largeTitleDisplayMode = .never
+        vc.otherUserEmail = result["email"] ?? ""
+        vc.title = result["name"]
         navigationController?.pushViewController(vc, animated: true)
     }
     

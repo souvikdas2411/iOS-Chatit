@@ -103,11 +103,11 @@
                                 <rect key="frame" x="0.0" y="196" width="414" height="666"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="searchcell" id="8eB-P4-lFt">
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="searchcell" id="8eB-P4-lFt">
                                         <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="8eB-P4-lFt" id="N2J-Cl-ba7">
-                                            <rect key="frame" x="0.0" y="0.0" width="414" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="383" height="43.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                         </tableViewCellContentView>
                                     </tableViewCell>
@@ -117,12 +117,12 @@
                         <viewLayoutGuide key="safeArea" id="D3V-gy-cpQ"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
-                            <constraint firstItem="GVG-mI-1r9" firstAttribute="trailing" secondItem="D3V-gy-cpQ" secondAttribute="trailing" id="HGp-pQ-xGR"/>
-                            <constraint firstItem="GVG-mI-1r9" firstAttribute="bottom" secondItem="D3V-gy-cpQ" secondAttribute="bottom" id="PF6-mi-5Rh"/>
-                            <constraint firstItem="GVG-mI-1r9" firstAttribute="leading" secondItem="D3V-gy-cpQ" secondAttribute="leading" id="RCu-cu-kTa"/>
+                            <constraint firstItem="GVG-mI-1r9" firstAttribute="leading" secondItem="D3V-gy-cpQ" secondAttribute="leading" id="C6U-Z8-o2q"/>
+                            <constraint firstItem="GVG-mI-1r9" firstAttribute="trailing" secondItem="D3V-gy-cpQ" secondAttribute="trailing" id="PxF-Vu-3n7"/>
                             <constraint firstItem="L6e-tV-7CD" firstAttribute="trailing" secondItem="D3V-gy-cpQ" secondAttribute="trailing" id="VuI-os-ZCf"/>
+                            <constraint firstItem="GVG-mI-1r9" firstAttribute="top" secondItem="L6e-tV-7CD" secondAttribute="bottom" id="kFb-LU-ydT"/>
                             <constraint firstItem="L6e-tV-7CD" firstAttribute="leading" secondItem="D3V-gy-cpQ" secondAttribute="leading" id="kb0-NK-pZy"/>
-                            <constraint firstItem="GVG-mI-1r9" firstAttribute="top" secondItem="L6e-tV-7CD" secondAttribute="bottom" id="sCg-3F-RgX"/>
+                            <constraint firstItem="D3V-gy-cpQ" firstAttribute="bottom" secondItem="GVG-mI-1r9" secondAttribute="bottom" id="yU3-2A-V6K"/>
                             <constraint firstItem="L6e-tV-7CD" firstAttribute="top" secondItem="D3V-gy-cpQ" secondAttribute="top" id="z9L-G0-dEV"/>
                         </constraints>
                     </view>

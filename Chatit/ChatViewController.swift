@@ -7,7 +7,7 @@
 
 import UIKit
 import MessageKit
-
+import InputBarAccessoryView
 
 struct Message: MessageType{
     var sender: SenderType
@@ -33,19 +33,25 @@ struct Sender: SenderType{
 
 class ChatViewController: MessagesViewController {
     
+    public var otherUserEmail = ""
+    public var isNewConversation = false
+    
+    
     private var messages = [Message]()
     private let selfSender = Sender(photoURL: "", senderId: "1", displayName: "Souvik's Mac")
     
-
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        print(otherUserEmail)
         messages.append(Message(sender: selfSender, messageId: "1", sentDate: Date(), kind: .text("From mac")))
         messages.append(Message(sender: selfSender, messageId: "1", sentDate: Date(), kind: .text("From mac")))
 
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
+        
+        messageInputBar.delegate = self
     }
 
 }
