@@ -285,10 +285,11 @@ extension DatabaseManager{
             break
         }
         
-        guard let currentUserEmail = UserDefaults.standard.string(forKey: "email") else{
+        guard let myEmail = UserDefaults.standard.string(forKey: "email") else{
             completion(false)
             return
         }
+        let currentUserEmail = DatabaseManager.safeEmail(emailAddress: myEmail)
         let collectionMessage: [String: Any] = [
             "id":firstMessage.messageId,
             "type":firstMessage.kind.messageKindString,
@@ -385,8 +386,70 @@ extension DatabaseManager{
     
     
     ///SENDING MESSAGES IN GENERAL
-    public func sendMessage(toConversation: String, message: Message, completion: @escaping (Bool) -> Void){
-        
+    public func sendMessage(otherUserEmail: otherUserEmail, name: String, to conversation: String, newMessage: Message, completion: @escaping (Bool) -> Void){
+        database.child("\(conversation)/messages").observeSingleEvent(of: .value, with: {[weak self] snapshot in
+            
+            guard let strongSelf = self else {
+                return
+            }
+            
+            guard var currentMessages = snapshot.value as? [[String: Any]] else {
+                completion(false)
+                return
+            }
+            let messageDate = newMessage.sentDate
+            let dateString = ChatViewController.dateFormatter.string(from: messageDate)
+            
+            var message = ""
+            switch newMessage.kind{
+            case .text(let messageText):
+                message = messageText
+            case .attributedText(_):
+                break
+            case .photo(_):
+                break
+            case .video(_):
+                break
+            case .location(_):
+                break
+            case .emoji(_):
+                break
+            case .audio(_):
+                break
+            case .contact(_):
+                break
+            case .linkPreview(_):
+                break
+            case .custom(_):
+                break
+            }
+            
+            guard let myEmail = UserDefaults.standard.string(forKey: "email") else{
+                completion(false)
+                return
+            }
+            let currentUserEmail = DatabaseManager.safeEmail(emailAddress: myEmail)
+            let newMessageEntry: [String: Any] = [
+                "id":newMessage.messageId,
+                "type":newMessage.kind.messageKindString,
+                "content": message,
+                "date":dateString,
+                "sender_email": currentUserEmail,
+                "is_read":false,
+                "name": name
+                
+            ]
+            currentMessages.append(newMessageEntry)
+            
+            strongSelf.database.child("\(conversation)/messages").setValue(currentMessages) { error, _ in
+                guard error == nil else{
+                   completion(false)
+                    return
+                }
+                completion(true)
+                
+            }
+        })
     }
 }
 

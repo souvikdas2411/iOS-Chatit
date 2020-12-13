@@ -74,7 +74,8 @@ class ChatViewController: MessagesViewController {
     public var conversationId: String?
     
     private var messages = [Message]()
-    private let selfSender = Sender(photoURL: "", senderId: (UserDefaults.standard.string(forKey: "email") ?? FirebaseAuth.Auth.auth().currentUser?.email) ?? " ", displayName: "Me")
+    //let temporary = DatabaseManager.safeEmail(emailAddress: UserDefaults.standard.string(forKey: "email"))
+    private let selfSender = Sender(photoURL: "", senderId: DatabaseManager.safeEmail(emailAddress: (UserDefaults.standard.string(forKey: "email" ?? "") ?? FirebaseAuth.Auth.auth().currentUser?.email) ?? "") ?? " ", displayName: "Me")
     
     
     //MARK:- VIEW DID LOAD
@@ -145,10 +146,13 @@ extension ChatViewController: InputBarAccessoryViewDelegate{
             
         }
         else{
-            
+            guard let conversationId = conversationId, let name = self.title else {
+                return
+            }
             ///CONTINUE WITH THE EXISTING CONVERSATION
-            DatabaseManager.shared.sendMessage(toConversation: otherUserEmail, message: message, completion: {success in
+            DatabaseManager.shared.sendMessage(otherUserEmail: otherUserEmail,name: name, to: conversationId, newMessage: message, completion: {[weak self] success in
                 if success{
+                    self?.messageInputBar.inputTextView.text = nil
                     print("message sent")
                 }
                 else{
