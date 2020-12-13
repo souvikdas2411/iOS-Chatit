@@ -71,9 +71,11 @@ class ChatViewController: MessagesViewController {
     
     public var otherUserEmail = ""
     public var isNewConversation = false
+    public var conversationId: String?
     
     private var messages = [Message]()
     private let selfSender = Sender(photoURL: "", senderId: (UserDefaults.standard.string(forKey: "email") ?? FirebaseAuth.Auth.auth().currentUser?.email) ?? " ", displayName: "Me")
+    
     
     //MARK:- VIEW DID LOAD
     override func viewDidLoad() {
@@ -81,6 +83,7 @@ class ChatViewController: MessagesViewController {
         
         print(otherUserEmail)
         print(isNewConversation)
+        print(UserDefaults.standard.string(forKey: "email"))
         
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self
@@ -88,11 +91,34 @@ class ChatViewController: MessagesViewController {
         
         messageInputBar.delegate = self
         
+        if let id = conversationId {
+            listenForMessages(id: id)
+        }
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         messageInputBar.inputTextView.becomeFirstResponder()
+    }
+    
+    //MARK:- LISTENING FOR EXISTING MESSAGES IN A CONVERSATION
+    public func listenForMessages(id: String){
+        DatabaseManager.shared.getAllMessageForConversation(with: id, completion: {[weak self] result in
+            switch result{
+            case .success(let messages):
+                guard !messages.isEmpty else{
+                    return
+                }
+                self?.messages = messages
+                
+                DispatchQueue.main.async {
+                    ///THE STATEMENT BELOW KEEPS THE USER IN THE SAME SCROLL POSITION EVEN IF A NEW MESSAGE ARRIVES
+                    self?.messagesCollectionView.reloadDataAndKeepOffset()
+                }
+            case .failure(let error):
+                print("failed to get messages acknowledgement from ChatViewController \(error)")
+            }
+        })
     }
 }
 //MARK:-HANDLING ACCESSORY BAR/TEXT BAR DELEGATE
@@ -108,9 +134,9 @@ extension ChatViewController: InputBarAccessoryViewDelegate{
                 if success{
                     print("message sent")
                     self?.isNewConversation = false
-//                    let newConversationId = "conversation_\(mmessage.messageId)"
-//                    self?.conversationId = newConversationId
-//                    self?.listenForMessages(id: newConversationId, shouldScrollToBottom: true)
+                    //                    let newConversationId = "conversation_\(mmessage.messageId)"
+                    //                    self?.conversationId = newConversationId
+                    //                    self?.listenForMessages(id: newConversationId, shouldScrollToBottom: true)
                     self?.messageInputBar.inputTextView.text = nil
                 }
                 else{

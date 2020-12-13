@@ -197,7 +197,32 @@ extension DatabaseManager{
                     
                 ]
             ]
-            print("usernode == \(userNode)")
+            let recipient_newConversationsData: [String : Any] = [
+                "id": conversationId,
+                "other_user_email": safeEmail,
+                "name": "Self",
+                "latest_message": [
+                    "date": dateString,
+                    "is_read": false,
+                    "message": message,
+                    
+                ]
+            ]
+            
+            ///RECIPIENT USER ENTRY
+            self.database.child("\(otherUserEmail)/conversations").observeSingleEvent(of: .value, with: {snapshot in
+                if var conversations = snapshot.value as? [[String: Any]] {
+                    //append
+                    conversations.append(recipient_newConversationsData)
+                    self.database.child("\(otherUserEmail)/conversations").setValue([conversationId])
+                }
+                else{
+                    //create
+                    self.database.child("\(otherUserEmail)/conversations").setValue([recipient_newConversationsData])
+                }
+            })
+            
+            ///CURRENT USER ENTRY
             if var conversations = userNode["conversations"] as? [[String: Any]] {
                 ///conversations array exists for current user i.e user has at least one conversation
                 conversations.append(newConversationsData)
@@ -276,7 +301,7 @@ extension DatabaseManager{
         
         let value: [String: Any] = [
             "messages": [
-                message
+                collectionMessage
             ]
         ]
         
@@ -325,9 +350,36 @@ extension DatabaseManager{
         })
     }
     
-    //
-    public func getAllMessageForConversation(with id: String, completion: @escaping (Result<String, Error>) -> Void){
-        
+    //NAME SUGGESTS ENOUGH
+    public func getAllMessageForConversation(with id: String, completion: @escaping (Result<[Message], Error>) -> Void){
+        ///ATTACHING LISTENER FOR NEW CONVOS
+        database.child("\(id)/messages").observe(.value, with: { snapshot in
+            guard let value = snapshot.value as? [[String: Any]] else{
+                completion(.failure(DatabaseError.failedToFetch))
+                return
+            }
+            
+            ///converting dictionary to model check conversationsmodel,swift for model info
+            let messages: [Message] = value.compactMap({ dictionary in
+                guard let name =  dictionary["name"] as? String,
+                      let isRead = dictionary["is_read"] as? Bool,
+                      let messageID = dictionary["id"] as? String,
+                      let content = dictionary["content"] as? String,
+                      let senderEmail = dictionary["sender_email"] as? String,
+                      let type = dictionary["type"] as? String,
+                      let dateString = dictionary["date"] as? String,
+                      let date = ChatViewController.dateFormatter.date(from: dateString) else{
+                    
+                    return nil
+                    
+                }
+                
+                let sender = Sender(photoURL: "", senderId: senderEmail, displayName: name)
+                return Message(sender: sender, messageId: messageID, sentDate: date, kind: .text(content))
+            })
+            
+            completion(.success(messages))
+        })
     }
     
     

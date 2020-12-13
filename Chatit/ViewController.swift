@@ -1,10 +1,10 @@
-///I WOULD DIE BEFORE I DIRECTLY CLONE A GIT AND SAY THAT IT IS MY CODE - SOUVIK DAS
+///I WOULD DIE BEFORE I CLONE A GIT AND SAY THAT IT IS MY CODE - SOUVIK DAS
 //  ViewController.swift
 //  Chatit
 //
 //  Created by Souvik Das on 08/12/20.
 //
-///THIS PROJECT MIGHT BE SUBJECT TO CYCLES BECAUSE OF WEAK SELF, FUNCTIONALLY IT WILL PERFORM JUST LIKE ANY OTHER APPLICATION
+///THIS PROJECT MIGHT BE SUBJECT TO RETAIN CYCLES BECAUSE OF WEAK SELF BEING ABSENT IN SOME SLEF CALLS, FUNCTIONALLY IT WILL PERFORM JUST LIKE ANY OTHER APPLICATION
 import UIKit
 import FirebaseAuth
 import JGProgressHUD
@@ -83,6 +83,7 @@ class ViewController: UIViewController {
         vc.navigationItem.largeTitleDisplayMode = .never
         vc.otherUserEmail = result["email"] ?? ""
         vc.isNewConversation = true
+        vc.conversationId = nil
         vc.title = result["name"]
         navigationController?.pushViewController(vc, animated: true)
     }
@@ -132,6 +133,7 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource{
                 return
         }
         vc.navigationItem.largeTitleDisplayMode = .never
+        vc.conversationId = conversations[indexPath.row].id
         vc.otherUserEmail = conversations[indexPath.row].otherUserEmail
         vc.title = conversations[indexPath.row].name
         navigationController?.pushViewController(vc, animated: true)
