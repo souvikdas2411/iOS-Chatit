@@ -4,7 +4,7 @@
 //
 //  Created by Souvik Das on 08/12/20.
 //
-
+//FACEBOOK IS CAUSING SERIOUS PROBLEMS
 import UIKit
 import FirebaseAuth
 import FBSDKLoginKit
@@ -31,7 +31,7 @@ class LoginViewController: UIViewController {
             return button
         }()
         loginButton.center = view.center
-        view.addSubview(loginButton)
+//        view.addSubview(loginButton)
         
         //MARK:- HARDCODING GOOGLE BUTTON CUZ OF SOME ANCHOR PROBLEM
         //        googleLoginButton.frame =  CGRect(x: 125, y: 355, width: 50, height: 30)
@@ -79,7 +79,7 @@ class LoginViewController: UIViewController {
             return
         }
         
-        //FIREBASE LOGIN
+        //MARK:- FIREBASE LOGIN
         FirebaseAuth.Auth.auth().signIn(withEmail: e, password: p, completion: {authResult,error in
             guard let _ = authResult, error == nil else{
                 self.tap1()
@@ -90,8 +90,23 @@ class LoginViewController: UIViewController {
             }
             ///CACHING USER DATA ON THE DEVICE
             ///NEED TO PULL OUT NAME FROM DATABASE DURING LOGIN USING FIREBASE. REFER DATABASEMANAGER FOR DETAILS
-            UserDefaults.standard.set(e, forKey: "email")
+            
             let safeEmail = DatabaseManager.safeEmail(emailAddress: e)
+            UserDefaults.standard.set(e, forKey: "email")
+            DatabaseManager.shared.getDataFor(path: safeEmail, completion: { [weak self] result in
+                switch result{
+                case .success(let data):
+                    guard let userData = data as? [String: Any],
+                          let first_name = userData["first_name"] as? String,
+                          let last_name = userData["last_name"] as? String else{
+                        UserDefaults.standard.set("Name error 404", forKey: "name")
+                        return
+                    }
+                    UserDefaults.standard.set("\(first_name) \(last_name)", forKey: "name")
+                case .failure(let error):
+                    print("acknowledgement from LoginViewController \(error)")
+                }
+            })
             
             
             self.navigationController?.popToRootViewController(animated: true)

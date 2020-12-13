@@ -145,7 +145,8 @@ extension DatabaseManager{
     
     ///CREATE A NEW CONVO
     public func createNewConversation(with otherUserEmail: String, firstMessage: Message,name: String, completion: @escaping (Bool) -> Void){
-        guard let currentEmail = UserDefaults.standard.string(forKey: "email") else {
+        guard let currentEmail = UserDefaults.standard.string(forKey: "email"),
+              let currentName = UserDefaults.standard.string(forKey: "name") else {
             completion(false)
             return
         }
@@ -200,7 +201,7 @@ extension DatabaseManager{
             let recipient_newConversationsData: [String : Any] = [
                 "id": conversationId,
                 "other_user_email": safeEmail,
-                "name": "Self",
+                "name": currentName,
                 "latest_message": [
                     "date": dateString,
                     "is_read": false,
@@ -389,4 +390,16 @@ extension DatabaseManager{
     }
 }
 
+//MARK:- USED TO GET FNAME AND LNAME FROM DATABASE FOR FIREBASE LOGIN
+extension DatabaseManager{
+    public func getDataFor(path: String, completion: @escaping (Result<Any, Error>) -> Void) {
+        database.child("\(path)").observeSingleEvent(of: .value) { snapshot in
+            guard let value = snapshot.value else {
+                completion(.failure(DatabaseError.failedToFetch))
+                return
+            }
+            completion(.success(value))
+        }
+    }
+}
 

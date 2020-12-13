@@ -124,19 +124,18 @@ class ChatViewController: MessagesViewController {
 //MARK:-HANDLING ACCESSORY BAR/TEXT BAR DELEGATE
 extension ChatViewController: InputBarAccessoryViewDelegate{
     func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
+        
+        let uuid = UUID().uuidString //GENERATING RANDOM MESSAGEID
+        let message = Message(sender: selfSender, messageId: uuid, sentDate: Date(), kind: .text(text))
+
         ///SENDING MESSAGES IF NOT EMPTY STRING, UPDATE: INPUT BAR DOESNT ALLOW EMPTY STRINGS
         if isNewConversation{
             ///CREATING NEW CONVERSATION IN DATABASE
-            let uuid = UUID().uuidString //GENERATING RANDOM MESSAGEID
-            let message = Message(sender: selfSender, messageId: uuid, sentDate: Date(), kind: .text(text))
             print(text)
             DatabaseManager.shared.createNewConversation(with: otherUserEmail, firstMessage: message, name: self.title ?? "Error 404", completion: {[weak self] success in
                 if success{
                     print("message sent")
                     self?.isNewConversation = false
-                    //                    let newConversationId = "conversation_\(mmessage.messageId)"
-                    //                    self?.conversationId = newConversationId
-                    //                    self?.listenForMessages(id: newConversationId, shouldScrollToBottom: true)
                     self?.messageInputBar.inputTextView.text = nil
                 }
                 else{
@@ -148,6 +147,14 @@ extension ChatViewController: InputBarAccessoryViewDelegate{
         else{
             
             ///CONTINUE WITH THE EXISTING CONVERSATION
+            DatabaseManager.shared.sendMessage(toConversation: otherUserEmail, message: message, completion: {success in
+                if success{
+                    print("message sent")
+                }
+                else{
+                    print("failed acknowledgenment from messages")
+                }
+            })
             
             
         }
