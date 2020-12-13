@@ -130,6 +130,7 @@ class RegisterViewController: UIViewController {
                 })
                 ///CACHING USER DATA ON THE DEVICE
                 UserDefaults.standard.set(ee, forKey: "email")
+                UserDefaults.standard.set("\(fn) \(ln)", forKey: "name")
                 self.navigationController?.popToRootViewController(animated: true)
             })
             

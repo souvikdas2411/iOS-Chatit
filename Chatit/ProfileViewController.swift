@@ -63,13 +63,12 @@ class ProfileViewController: UIViewController {
         navigationController?.popToRootViewController(animated: true)
     }
     func allOut(){
-//        UserDefaults.standard.setValue(nil, forKey: "email")
-//        UserDefaults.standard.setValue(nil, forKey: "name")
+        UserDefaults.standard.setValue(nil, forKey: "email")
+        UserDefaults.standard.setValue(nil, forKey: "name")
         
-        if let appDomain = Bundle.main.bundleIdentifier {
-            UserDefaults.standard.removePersistentDomain(forName: appDomain)
-        }
-        
+//        if let appDomain = Bundle.main.bundleIdentifier {
+//            UserDefaults.standard.removePersistentDomain(forName: appDomain)
+//        }
         // Log Out facebook
         FBSDKLoginKit.LoginManager().logOut()
         

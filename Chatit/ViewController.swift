@@ -18,7 +18,7 @@ class ViewController: UIViewController {
     private let spinner = JGProgressHUD(style: .extraLight)
     
     private var conversations = [Conversation]()
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -33,7 +33,7 @@ class ViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         validateAuth()
-
+        
     }
     
     //MARK:- REALTIME FETCHING OF CONVERSATIONS AND HENCE UPDATING THE conversations ARRAY
@@ -41,11 +41,11 @@ class ViewController: UIViewController {
         guard let email = UserDefaults.standard.value(forKey: "email") as? String else {
             return
         }
-
+        
         print("starting conversation fetch...")
-
+        
         let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
-
+        
         DatabaseManager.shared.getAllConversations(for: safeEmail, completion: { [weak self] result in
             switch result {
             case .success(let conversations):
@@ -56,7 +56,7 @@ class ViewController: UIViewController {
                 }
                 print("successfully got conversation models")
                 self?.conversations = conversations
-
+                
                 DispatchQueue.main.async {
                     self?.table.reloadData()
                 }
@@ -69,7 +69,7 @@ class ViewController: UIViewController {
     //MARK:- ADDING NEW CONVERSATION
     @IBAction func didTapApp(){
         guard let vc = storyboard?.instantiateViewController(identifier: "new") as? NewConversationViewController else{
-                return
+            return
         }
         vc.completion = {[weak self] result in
             self?.createNewConversation(result: result)
@@ -92,7 +92,7 @@ class ViewController: UIViewController {
     private func validateAuth(){
         if FirebaseAuth.Auth.auth().currentUser == nil{
             guard let vc = storyboard?.instantiateViewController(identifier: "login") as? LoginViewController else{
-                    return
+                return
             }
             navigationController?.pushViewController(vc, animated: true)
         }
@@ -101,14 +101,14 @@ class ViewController: UIViewController {
     //MARK:- PROFILE VIEW
     @IBAction func didTapProfile(){
         guard let vc = storyboard?.instantiateViewController(identifier: "prof") as? ProfileViewController else{
-                return
+            return
         }
         navigationController?.pushViewController(vc, animated: true)
     }
     
     //MARK:- CONVERSATIONS
     func fetchConversations(){
-//        spinner.show(in: view)
+        //        spinner.show(in: view)
         table.isHidden = false
     }
     
@@ -123,14 +123,14 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = table.dequeueReusableCell(withIdentifier: ConversationTableViewCell.identifier, for: indexPath) as! ConversationTableViewCell
         cell.configure(with: conversations[indexPath.row])
-//        cell.accessoryType = .disclosureIndicator
+        //        cell.accessoryType = .disclosureIndicator
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         guard let vc = storyboard?.instantiateViewController(identifier: "chat") as? ChatViewController else{
-                return
+            return
         }
         vc.navigationItem.largeTitleDisplayMode = .never
         vc.conversationId = conversations[indexPath.row].id

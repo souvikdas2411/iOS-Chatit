@@ -151,7 +151,7 @@ extension DatabaseManager{
         }
         let safeEmail = DatabaseManager.safeEmail(emailAddress: currentEmail)
         let ref = database.child("\(safeEmail)")
-        ref.observeSingleEvent(of: .value, with: {snapshot in
+        ref.observeSingleEvent(of: .value, with: {[weak self] snapshot in
             guard var userNode = snapshot.value as? [String:Any] else{
                 completion(false)
                 return
@@ -210,15 +210,15 @@ extension DatabaseManager{
             ]
             
             ///RECIPIENT USER ENTRY
-            self.database.child("\(otherUserEmail)/conversations").observeSingleEvent(of: .value, with: {snapshot in
+            self?.database.child("\(otherUserEmail)/conversations").observeSingleEvent(of: .value, with: {[weak self] snapshot in
                 if var conversations = snapshot.value as? [[String: Any]] {
                     //append
                     conversations.append(recipient_newConversationsData)
-                    self.database.child("\(otherUserEmail)/conversations").setValue([conversationId])
+                    self?.database.child("\(otherUserEmail)/conversations").setValue([conversationId])
                 }
                 else{
                     //create
-                    self.database.child("\(otherUserEmail)/conversations").setValue([recipient_newConversationsData])
+                    self?.database.child("\(otherUserEmail)/conversations").setValue([recipient_newConversationsData])
                 }
             })
             

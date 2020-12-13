@@ -89,7 +89,10 @@ class LoginViewController: UIViewController {
                 self.spinner.dismiss()
             }
             ///CACHING USER DATA ON THE DEVICE
+            ///NEED TO PULL OUT NAME FROM DATABASE DURING LOGIN USING FIREBASE. REFER DATABASEMANAGER FOR DETAILS
             UserDefaults.standard.set(e, forKey: "email")
+            let safeEmail = DatabaseManager.safeEmail(emailAddress: e)
+            
             
             self.navigationController?.popToRootViewController(animated: true)
         })
@@ -159,9 +162,10 @@ extension LoginViewController: LoginButtonDelegate{
                 
                 return
             }
+            
             ///CACHING USER DATA ON THE DEVICE
             UserDefaults.standard.set(email, forKey: "email")
-//            UserDefaults.standard.set(fname, forKey: "first_name")
+            UserDefaults.standard.set("\(fname) \(lname)", forKey: "name")
             
             DatabaseManager.shared.userExists(with: email, completion: { exists in
                 if !exists {
