@@ -4,7 +4,10 @@
 //
 //  Created by Souvik Das on 08/12/20.
 //
+///NOTES TO SELF
+///FOR SMOOTHER UI EXPERIENCE CACHE EVERYTHING ON DEVICE USING REALM WHICH I THINK I WOULD IMPLEMENT
 ///THIS PROJECT MIGHT BE SUBJECT TO RETAIN CYCLES BECAUSE OF WEAK SELF BEING ABSENT IN SOME SLEF CALLS, FUNCTIONALLY IT WILL PERFORM JUST LIKE ANY OTHER APPLICATION
+
 import UIKit
 import FirebaseAuth
 import JGProgressHUD
@@ -43,7 +46,6 @@ class ViewController: UIViewController {
         }
         
         print("starting conversation fetch...")
-        
         let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
         
         DatabaseManager.shared.getAllConversations(for: safeEmail, completion: { [weak self] result in
@@ -64,6 +66,7 @@ class ViewController: UIViewController {
                 print("failed to get convos: \(error)")
             }
         })
+        
     }
     
     //MARK:- ADDING NEW CONVERSATION

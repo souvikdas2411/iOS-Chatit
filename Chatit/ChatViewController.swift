@@ -9,6 +9,7 @@ import UIKit
 import MessageKit
 import InputBarAccessoryView
 import FirebaseAuth
+import SDWebImage
 
 struct Message: MessageType{
     var sender: SenderType
@@ -74,7 +75,7 @@ class ChatViewController: MessagesViewController {
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
-        
+        messagesCollectionView.delegate = self
         messageInputBar.delegate = self
         
         setupInputButton()
@@ -135,10 +136,10 @@ class ChatViewController: MessagesViewController {
     }
     
     //MARK:- VIEW DID APPEAR SECTION
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        messageInputBar.inputTextView.becomeFirstResponder()
-    }
+//    override func viewDidAppear(_ animated: Bool) {
+//        super.viewDidAppear(animated)
+//        messageInputBar.inputTextView.becomeFirstResponder()
+//    }
     
     //MARK:- LISTENING FOR EXISTING MESSAGES IN A CONVERSATION
     public func listenForMessages(id: String){
@@ -218,6 +219,39 @@ extension ChatViewController: MessagesDataSource, MessagesLayoutDelegate, Messag
         return messages.count
     }
     
+    func configureMediaMessageImageView(_ imageView: UIImageView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+        guard let message = message as? Message else {
+            return
+        }
+        
+        switch message.kind {
+        case .photo(let media):
+            guard let imageUrl = media.url else {
+                return
+            }
+            imageView.sd_setImage(with: imageUrl, completed: nil)
+        default:
+            break
+        }
+    }
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let message = messages[indexPath.section]
+        
+        switch message.kind {
+        case .photo(let media):
+            guard let imageUrl = media.url else {
+                return
+            }
+            guard let vc = storyboard?.instantiateViewController(identifier: "photo") as? PhotoViewerViewController else{
+                return
+            }
+            vc.imageUrl = imageUrl.absoluteString
+            vc.title = "Photo"
+            navigationController?.pushViewController(vc, animated: true)
+        default:
+            break
+        }
+    }
     
 }
 

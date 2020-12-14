@@ -6,24 +6,20 @@
 //
 
 import UIKit
+import SDWebImage
 
 class PhotoViewerViewController: UIViewController {
 
+    @IBOutlet var imageView : UIImageView!
+    
+    public var imageUrl = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        
+        imageView.sd_setImage(with: URL(string: imageUrl), completed: nil)
     }
     
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
