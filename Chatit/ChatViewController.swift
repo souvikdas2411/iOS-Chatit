@@ -75,6 +75,7 @@ class ChatViewController: MessagesViewController {
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self
         messagesCollectionView.messagesDisplayDelegate = self
+        messagesCollectionView.messageCellDelegate = self
         messagesCollectionView.delegate = self
         messageInputBar.delegate = self
         
@@ -234,7 +235,14 @@ extension ChatViewController: MessagesDataSource, MessagesLayoutDelegate, Messag
             break
         }
     }
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+}
+//MARK:- HANDLING WHEN USER TAPS INTO A MESSAGE
+extension ChatViewController: MessageCellDelegate{
+    func didTapImage(in cell: MessageCollectionViewCell) {
+        
+        guard let indexPath = messagesCollectionView.indexPath(for: cell) else {
+            return
+        }
         let message = messages[indexPath.section]
         
         switch message.kind {
@@ -252,8 +260,8 @@ extension ChatViewController: MessagesDataSource, MessagesLayoutDelegate, Messag
             break
         }
     }
-    
 }
+
 
 extension MessageKind{
     var messageKindString: String{
