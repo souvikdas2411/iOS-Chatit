@@ -20,33 +20,6 @@ struct Message: MessageType{
     var kind: MessageKind
 }
 
-extension MessageKind{
-    var messageKindString: String{
-        switch self {
-        case .text(_):
-            return "text"
-        case .attributedText(_):
-            return "attributed_text"
-        case .photo(_):
-            return "photo"
-        case .video(_):
-            return "video"
-        case .location(_):
-            return "location"
-        case .emoji(_):
-            return "emoji"
-        case .audio(_):
-            return "audio"
-        case .contact(_):
-            return "contact"
-        case .linkPreview(_):
-            return "link_preview"
-        case .custom(_):
-            return "custom"
-        }
-    }
-}
-
 struct Sender: SenderType{
     
     var photoURL: String
@@ -84,7 +57,7 @@ class ChatViewController: MessagesViewController {
         
         print(otherUserEmail)
         print(isNewConversation)
-//        print(UserDefaults.standard.string(forKey: "email"))
+        //        print(UserDefaults.standard.string(forKey: "email"))
         
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self
@@ -99,7 +72,8 @@ class ChatViewController: MessagesViewController {
         
     }
     
-    ///SETTING UP THE SEND IMAGE BUTTON
+    //MARK:- ATTACHMENT BUTTON
+    ///SETTING UP THE SEND IMAGE BUTTON AND REQUIRED STUFFS
     private func setupInputButton(){
         let button = InputBarButtonItem()
         button.setSize(CGSize(width: 35, height: 35), animated: false)
@@ -111,7 +85,8 @@ class ChatViewController: MessagesViewController {
         messageInputBar.setStackViewItems([button], forStack: .left, animated: false)
     }
     private func presentInputActionSheet(){
-        let actionSheet = UIAlertController(title: "Attach", message: "What would you like to attach?", preferredStyle: .actionSheet)
+        let actionSheet = UIAlertController(title: "Attachment", message: "What would you like to attach?", preferredStyle: .actionSheet)
+        
         actionSheet.addAction(UIAlertAction(title: "Photo", style: .default, handler: {[weak self] _ in
             self?.presentPhotoInputActionSheet()
         }))
@@ -121,13 +96,28 @@ class ChatViewController: MessagesViewController {
         actionSheet.addAction(UIAlertAction(title: "Audio", style: .default, handler: {[weak self] _ in
             
         }))
-        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: {[weak self] _ in
-            
-        }))
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil ))
+        
         present(actionSheet, animated: true)
     }
     private func presentPhotoInputActionSheet(){
+        let actionSheet = UIAlertController(title: "Attach Photo", message: "Select source", preferredStyle: .actionSheet)
         
+        actionSheet.addAction(UIAlertAction(title: "Camera", style: .default, handler: {[weak self] _ in
+            let picker = UIImagePickerController()
+            picker.sourceType = .camera
+            picker.delegate = self
+            picker.allowsEditing = true
+            self?.present(picker, animated: true)
+        }))
+        actionSheet.addAction(UIAlertAction(title: "Gallery", style: .default, handler: {[weak self] _ in
+            let picker = UIImagePickerController()
+            picker.sourceType = .photoLibrary
+            picker.delegate = self
+            picker.allowsEditing = true
+            self?.present(picker, animated: true)
+        }))
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil ))
     }
     
     //MARK:- VIEW DID APPEAR SECTION
@@ -162,7 +152,7 @@ extension ChatViewController: InputBarAccessoryViewDelegate{
         
         let uuid = UUID().uuidString //GENERATING RANDOM MESSAGEID
         let message = Message(sender: selfSender, messageId: uuid, sentDate: Date(), kind: .text(text))
-
+        
         ///SENDING MESSAGES IF NOT EMPTY STRING, UPDATE: INPUT BAR DOESNT ALLOW EMPTY STRINGS
         if isNewConversation{
             ///CREATING NEW CONVERSATION IN DATABASE
@@ -215,4 +205,47 @@ extension ChatViewController: MessagesDataSource, MessagesLayoutDelegate, Messag
     }
     
     
+}
+
+extension MessageKind{
+    var messageKindString: String{
+        switch self {
+        case .text(_):
+            return "text"
+        case .attributedText(_):
+            return "attributed_text"
+        case .photo(_):
+            return "photo"
+        case .video(_):
+            return "video"
+        case .location(_):
+            return "location"
+        case .emoji(_):
+            return "emoji"
+        case .audio(_):
+            return "audio"
+        case .contact(_):
+            return "contact"
+        case .linkPreview(_):
+            return "link_preview"
+        case .custom(_):
+            return "custom"
+        }
+    }
+}
+
+//MARK:- IMAGE PICKER DELEGATE
+extension ChatViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        picker.dismiss(animated: true, completion: nil)
+    }
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        picker.dismiss(animated: true, completion: nil)
+        guard let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage,
+              let imageData = image.pngData() else{
+            return
+        }
+        
+    }
 }
