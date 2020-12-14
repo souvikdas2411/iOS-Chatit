@@ -30,6 +30,17 @@ struct Sender: SenderType{
     
     
 }
+struct Media: MediaItem{
+    var url: URL?
+    
+    var image: UIImage?
+    
+    var placeholderImage: UIImage
+    
+    var size: CGSize
+    
+    
+}
 
 
 class ChatViewController: MessagesViewController {
@@ -47,7 +58,8 @@ class ChatViewController: MessagesViewController {
     public var conversationId: String?
     
     private var messages = [Message]()
-    //let temporary = DatabaseManager.safeEmail(emailAddress: UserDefaults.standard.string(forKey: "email"))
+    
+    
     private let selfSender = Sender(photoURL: "", senderId: DatabaseManager.safeEmail(emailAddress: (UserDefaults.standard.string(forKey: "email" ) ?? FirebaseAuth.Auth.auth().currentUser?.email) ?? "") , displayName: "Me")
     
     
@@ -118,6 +130,8 @@ class ChatViewController: MessagesViewController {
             self?.present(picker, animated: true)
         }))
         actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil ))
+        
+        present(actionSheet, animated: true)
     }
     
     //MARK:- VIEW DID APPEAR SECTION
@@ -243,9 +257,39 @@ extension ChatViewController: UIImagePickerControllerDelegate, UINavigationContr
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         picker.dismiss(animated: true, completion: nil)
         guard let image = info[UIImagePickerController.InfoKey.editedImage] as? UIImage,
-              let imageData = image.pngData() else{
+              let imageData = image.pngData(),
+              let conversationId = conversationId,
+              let name = self.title
+        else{
             return
         }
+        let uuid = UUID().uuidString
+        StorageManager.shared.uploadMessagePhoto(with: imageData, fileName: "\(uuid).png", completion: {[weak self] result in
+            guard let strongSelf = self else {
+                return
+            }
+            switch result{
+            case .success(let urlString):
+                
+                guard let url = URL(string: urlString),
+                      let placeholder = UIImage(systemName: "plus") else {
+                    return
+                }
+                
+                let media = Media(url: url, image: nil, placeholderImage: placeholder, size: .zero)
+                let message = Message(sender: self?.selfSender as! SenderType, messageId: uuid, sentDate: Date(), kind: .photo(media))
+                DatabaseManager.shared.sendMessage(otherUserEmail: strongSelf.otherUserEmail, name: name, to: conversationId, newMessage: message, completion: {[weak self] success in
+                    if success{
+                        print("photo message sent")
+                    }
+                    else{
+                        print("screwed up something")
+                    }
+                })
+            case .failure(let error):
+                print("failed to send photo \(error)")
+            }
+        })
         
     }
 }

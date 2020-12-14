@@ -7,6 +7,7 @@
 
 import Foundation
 import FirebaseDatabase
+import MessageKit
 
 final class DatabaseManager{
     
@@ -376,8 +377,25 @@ extension DatabaseManager{
                     
                 }
                 
+                var kind: MessageKind?
+                if type == "photo"{
+                    guard let imageUrl = URL(string: content),
+                          let placeholder = UIImage(systemName: "plus") else {
+                        return nil
+                    }
+                    let media = Media(url: imageUrl, image: nil, placeholderImage: placeholder, size: CGSize(width: 300, height: 300))
+                    kind = .photo(media)
+                }
+                if type == "text"{
+                    kind = .text(content)
+                }
+                
+                guard let finalKind = kind else {
+                    return nil
+                }
+                
                 let sender = Sender(photoURL: "", senderId: senderEmail, displayName: name)
-                return Message(sender: sender, messageId: messageID, sentDate: date, kind: .text(content))
+                return Message(sender: sender, messageId: messageID, sentDate: date, kind: finalKind)
             })
             
             completion(.success(messages))
@@ -409,12 +427,15 @@ extension DatabaseManager{
             
             var message = ""
             switch newMessage.kind{
+            
             case .text(let messageText):
                 message = messageText
             case .attributedText(_):
                 break
-            case .photo(_):
-                break
+            case .photo(let mediaItem):
+                if let targerUrlString = mediaItem.url?.absoluteString{
+                    message = targerUrlString
+                }
             case .video(_):
                 break
             case .location(_):
@@ -429,6 +450,7 @@ extension DatabaseManager{
                 break
             case .custom(_):
                 break
+                
             }
             
             guard let myEmail = UserDefaults.standard.string(forKey: "email") else{
