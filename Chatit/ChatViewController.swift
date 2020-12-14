@@ -75,7 +75,7 @@ class ChatViewController: MessagesViewController {
     
     private var messages = [Message]()
     //let temporary = DatabaseManager.safeEmail(emailAddress: UserDefaults.standard.string(forKey: "email"))
-    private let selfSender = Sender(photoURL: "", senderId: DatabaseManager.safeEmail(emailAddress: (UserDefaults.standard.string(forKey: "email" ?? "") ?? FirebaseAuth.Auth.auth().currentUser?.email) ?? "") ?? " ", displayName: "Me")
+    private let selfSender = Sender(photoURL: "", senderId: DatabaseManager.safeEmail(emailAddress: (UserDefaults.standard.string(forKey: "email" ) ?? FirebaseAuth.Auth.auth().currentUser?.email) ?? "") , displayName: "Me")
     
     
     //MARK:- VIEW DID LOAD
@@ -84,7 +84,7 @@ class ChatViewController: MessagesViewController {
         
         print(otherUserEmail)
         print(isNewConversation)
-        print(UserDefaults.standard.string(forKey: "email"))
+//        print(UserDefaults.standard.string(forKey: "email"))
         
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self
@@ -92,11 +92,45 @@ class ChatViewController: MessagesViewController {
         
         messageInputBar.delegate = self
         
+        setupInputButton()
         if let id = conversationId {
             listenForMessages(id: id)
         }
+        
     }
     
+    ///SETTING UP THE SEND IMAGE BUTTON
+    private func setupInputButton(){
+        let button = InputBarButtonItem()
+        button.setSize(CGSize(width: 35, height: 35), animated: false)
+        button.setImage(UIImage(systemName: "plus"), for: .normal)
+        button.onTouchUpInside { [weak self] _ in
+            self?.presentInputActionSheet()
+        }
+        messageInputBar.setLeftStackViewWidthConstant(to: 36, animated: false)
+        messageInputBar.setStackViewItems([button], forStack: .left, animated: false)
+    }
+    private func presentInputActionSheet(){
+        let actionSheet = UIAlertController(title: "Attach", message: "What would you like to attach?", preferredStyle: .actionSheet)
+        actionSheet.addAction(UIAlertAction(title: "Photo", style: .default, handler: {[weak self] _ in
+            self?.presentPhotoInputActionSheet()
+        }))
+        actionSheet.addAction(UIAlertAction(title: "Video", style: .default, handler: {[weak self] _ in
+            
+        }))
+        actionSheet.addAction(UIAlertAction(title: "Audio", style: .default, handler: {[weak self] _ in
+            
+        }))
+        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: {[weak self] _ in
+            
+        }))
+        present(actionSheet, animated: true)
+    }
+    private func presentPhotoInputActionSheet(){
+        
+    }
+    
+    //MARK:- VIEW DID APPEAR SECTION
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         messageInputBar.inputTextView.becomeFirstResponder()
