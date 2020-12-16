@@ -87,20 +87,59 @@ class ViewController: UIViewController {
             return
         }
         vc.completion = {[weak self] result in
-            self?.createNewConversation(result: result)
+            
+            let currentConversation = self?.conversations
+            if let targetConversation = currentConversation?.first(where: {
+                $0.otherUserEmail == DatabaseManager.safeEmail(emailAddress: result.email)
+            }){
+                guard let vc = self?.storyboard?.instantiateViewController(identifier: "chat") as? ChatViewController else{
+                    return
+                }
+                vc.isNewConversation = false
+                vc.navigationItem.largeTitleDisplayMode = .never
+                vc.otherUserEmail = targetConversation.otherUserEmail
+                vc.conversationId = targetConversation.id
+                vc.title = targetConversation.name
+                self?.navigationController?.pushViewController(vc, animated: true)
+                
+            }
+            else{
+                self?.createNewConversation(result: result)
+            }
         }
         navigationController?.pushViewController(vc, animated: true)
     }
     private func createNewConversation(result: SearchResult) {
-        guard let vc = storyboard?.instantiateViewController(identifier: "chat") as? ChatViewController else{
-            return
-        }
-        vc.navigationItem.largeTitleDisplayMode = .never
-        vc.otherUserEmail = result.email 
-        vc.isNewConversation = true
-        vc.conversationId = nil
-        vc.title = result.name
-        navigationController?.pushViewController(vc, animated: true)
+        let name = result.name
+        let email = DatabaseManager.safeEmail(emailAddress: result.email)
+        
+        DatabaseManager.shared.conversationExists(iwth: email, completion: { [weak self] result in
+            guard let strongSelf = self else {
+                return
+            }
+            switch result {
+            case .success(let conversationId):
+                guard let vc = self?.storyboard?.instantiateViewController(identifier: "chat") as? ChatViewController else{
+                    return
+                }
+                vc.otherUserEmail = email
+                vc.isNewConversation = false
+                vc.title = name
+                vc.conversationId = conversationId
+                vc.navigationItem.largeTitleDisplayMode = .never
+                strongSelf.navigationController?.pushViewController(vc, animated: true)
+            case .failure(_):
+                guard let vc = self?.storyboard?.instantiateViewController(identifier: "chat") as? ChatViewController else{
+                    return
+                }
+                vc.isNewConversation = true
+                vc.title = name
+                vc.otherUserEmail = email
+                vc.navigationItem.largeTitleDisplayMode = .never
+                vc.conversationId = nil
+                strongSelf.navigationController?.pushViewController(vc, animated: true)
+            }
+        })
     }
     
     //MARK:- VALIDATION
