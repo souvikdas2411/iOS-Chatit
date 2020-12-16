@@ -22,6 +22,8 @@ class ViewController: UIViewController {
     
     private var conversations = [Conversation]()
     
+    private var loginObserver: NSObjectProtocol?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -31,6 +33,12 @@ class ViewController: UIViewController {
         table.register(ConversationTableViewCell.self, forCellReuseIdentifier: ConversationTableViewCell.identifier)
         fetchConversations()
         startListeningForConversations()
+        loginObserver = NotificationCenter.default.addObserver(forName: .didLogInNotification, object: nil, queue: .main, using: {[weak self] _ in
+            guard let strongSelf = self else {
+                return
+            }
+            strongSelf.startListeningForConversations()
+        })
         
     }
     override func viewDidAppear(_ animated: Bool) {
@@ -43,6 +51,10 @@ class ViewController: UIViewController {
     private func startListeningForConversations() {
         guard let email = UserDefaults.standard.value(forKey: "email") as? String else {
             return
+        }
+        
+        if let observer = loginObserver {
+            NotificationCenter.default.removeObserver(observer)
         }
         
         print("starting conversation fetch...")
@@ -79,15 +91,15 @@ class ViewController: UIViewController {
         }
         navigationController?.pushViewController(vc, animated: true)
     }
-    private func createNewConversation(result: [String: String]) {
+    private func createNewConversation(result: SearchResult) {
         guard let vc = storyboard?.instantiateViewController(identifier: "chat") as? ChatViewController else{
             return
         }
         vc.navigationItem.largeTitleDisplayMode = .never
-        vc.otherUserEmail = result["email"] ?? ""
+        vc.otherUserEmail = result.email 
         vc.isNewConversation = true
         vc.conversationId = nil
-        vc.title = result["name"]
+        vc.title = result.name
         navigationController?.pushViewController(vc, animated: true)
     }
     
@@ -146,6 +158,29 @@ extension ViewController: UITableViewDelegate, UITableViewDataSource{
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 85
     }
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        return .delete
+    }
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        
+        if editingStyle == .delete{
+            
+            let conversationId = conversations[indexPath.row].id
+            tableView.beginUpdates()
+            
+            DatabaseManager.shared.deleteConversation(conversationId: conversationId, completion: { [weak self] success in
+                if success{
+                    self?.conversations.remove(at: indexPath.row)
+                    tableView.deleteRows(at: [indexPath], with: .fade)
+                }
+            })
+            
+            
+            
+            tableView.endUpdates()
+        }
+    }
+    
     
 }
 

@@ -43,7 +43,7 @@ final class DatabaseManager{
         var safeEmail = email.replacingOccurrences(of: "@", with: "(at)")
         safeEmail = safeEmail.replacingOccurrences(of: ".", with: "(dot)")
         database.child(safeEmail).observeSingleEvent(of: .value, with: {DataSnapshot in
-            guard let _ = DataSnapshot.value as? String else{
+            guard let _ = DataSnapshot.value as? [String: Any] else{
                 completion(false)
                 return
             }
@@ -216,7 +216,7 @@ extension DatabaseManager{
                 if var conversations = snapshot.value as? [[String: Any]] {
                     //append
                     conversations.append(recipient_newConversationsData)
-                    self?.database.child("\(otherUserEmail)/conversations").setValue([conversationId])
+                    self?.database.child("\(otherUserEmail)/conversations").setValue(conversations)
                 }
                 else{
                     //create
@@ -386,7 +386,17 @@ extension DatabaseManager{
                     let media = Media(url: imageUrl, image: nil, placeholderImage: placeholder, size: CGSize(width: 300, height: 300))
                     kind = .photo(media)
                 }
-                if type == "text"{
+                
+                if type == "video"{
+                    guard let videoUrl = URL(string: content),
+                          let placeholder = UIImage(systemName: "plus") else {
+                        return nil
+                    }
+                    let media = Media(url: videoUrl, image: nil, placeholderImage: placeholder, size: CGSize(width: 300, height: 300))
+                    kind = .video(media)
+                }
+                
+                if type == "text" {
                     kind = .text(content)
                 }
                 
@@ -430,14 +440,19 @@ extension DatabaseManager{
             
             case .text(let messageText):
                 message = messageText
+                
             case .attributedText(_):
                 break
             case .photo(let mediaItem):
                 if let targerUrlString = mediaItem.url?.absoluteString{
                     message = targerUrlString
                 }
-            case .video(_):
-                break
+                
+            case .video(let mediaItem):
+                if let targerUrlString = mediaItem.url?.absoluteString{
+                    message = targerUrlString
+                }
+                
             case .location(_):
                 break
             case .emoji(_):
@@ -555,6 +570,37 @@ extension DatabaseManager{
                 })
             }
         })
+    }
+    ///FUNCTION NAME SELF EXPLANATORY
+    public func deleteConversation(conversationId: String, completion: @escaping (Bool) -> Void) {
+        guard let email = UserDefaults.standard.value(forKey: "email") as? String else {
+            return
+        }
+        let safeEmail = DatabaseManager.safeEmail(emailAddress: email)
+
+        let ref = database.child("\(safeEmail)/conversations")
+        ref.observeSingleEvent(of: .value) { snapshot in
+            if var conversations = snapshot.value as? [[String: Any]] {
+                var positionToRemove = 0
+                for conversation in conversations {
+                    if let id = conversation["id"] as? String,
+                        id == conversationId {
+                        //FOUND THE POSITION TO DELETE SO BREAK AND ALSO THIS IS V LAME HACKY WAY TO IMPLEMENT THIS
+                        break
+                    }
+                    positionToRemove += 1
+                }
+
+                conversations.remove(at: positionToRemove)
+                ref.setValue(conversations, withCompletionBlock: { error, _  in
+                    guard error == nil else {
+                        completion(false)
+                        return
+                    }
+                    completion(true)
+                })
+            }
+        }
     }
 }
 

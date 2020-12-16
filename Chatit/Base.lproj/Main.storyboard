@@ -22,6 +22,11 @@
                                     <constraint firstAttribute="height" constant="96" id="9bQ-0x-axB"/>
                                     <constraint firstAttribute="width" constant="96" id="F94-sI-015"/>
                                 </constraints>
+                                <userDefinedRuntimeAttributes>
+                                    <userDefinedRuntimeAttribute type="number" keyPath="cornerRadius">
+                                        <integer key="value" value="48"/>
+                                    </userDefinedRuntimeAttribute>
+                                </userDefinedRuntimeAttributes>
                             </imageView>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="IWr-EQ-mDD">
                                 <rect key="frame" x="20" y="266" width="374" height="32"/>
@@ -102,16 +107,6 @@
                             <tableView hidden="YES" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="GVG-mI-1r9">
                                 <rect key="frame" x="0.0" y="196" width="414" height="666"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="searchcell" id="8eB-P4-lFt">
-                                        <rect key="frame" x="0.0" y="28" width="414" height="43.5"/>
-                                        <autoresizingMask key="autoresizingMask"/>
-                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="8eB-P4-lFt" id="N2J-Cl-ba7">
-                                            <rect key="frame" x="0.0" y="0.0" width="383" height="43.5"/>
-                                            <autoresizingMask key="autoresizingMask"/>
-                                        </tableViewCellContentView>
-                                    </tableViewCell>
-                                </prototypes>
                             </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="D3V-gy-cpQ"/>
@@ -246,7 +241,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eXh-Vs-3C0" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3840.579710144928" y="26.785714285714285"/>
+            <point key="canvasLocation" x="4750.7246376811599" y="26.785714285714285"/>
         </scene>
         <!--Photo Viewer View Controller-->
         <scene sceneID="OB0-FD-Fxk">
@@ -258,6 +253,7 @@
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="N7D-3i-7Zt">
                                 <rect key="frame" x="0.0" y="88" width="414" height="774"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="fgc-ir-G95"/>
@@ -269,14 +265,16 @@
                             <constraint firstItem="N7D-3i-7Zt" firstAttribute="bottom" secondItem="fgc-ir-G95" secondAttribute="bottom" id="Y9Q-WY-B97"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="U7p-BQ-7h3"/>
+                    <navigationItem key="navigationItem" id="U7p-BQ-7h3">
+                        <barButtonItem key="rightBarButtonItem" title="Save to device" image="icloud.and.arrow.down.fill" catalog="system" id="7tO-Vd-Lzu"/>
+                    </navigationItem>
                     <connections>
                         <outlet property="imageView" destination="N7D-3i-7Zt" id="zjO-dz-MA5"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XOJ-RA-iZa" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="5900.0000000000009" y="183.48214285714286"/>
+            <point key="canvasLocation" x="6810.144927536232" y="183.48214285714286"/>
         </scene>
         <!--Sign Up-->
         <scene sceneID="jal-k4-AP3">
@@ -397,7 +395,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2Az-mh-vSK" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="8159.420289855073" y="-40.178571428571423"/>
+            <point key="canvasLocation" x="9069.5652173913059" y="-40.178571428571423"/>
         </scene>
         <!--Item-->
         <scene sceneID="sw7-pp-L5E">
@@ -418,6 +416,22 @@
             </objects>
             <point key="canvasLocation" x="34.782608695652179" y="93.75"/>
         </scene>
+        <!--View Controller-->
+        <scene sceneID="Abx-vf-Jbm">
+            <objects>
+                <viewController id="qge-fB-mZZ" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="IJy-SI-XC0">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <viewLayoutGuide key="safeArea" id="NlA-QD-dxl"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="URr-37-8d5"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="G0W-i9-Tla" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="3060.8695652173915" y="239.73214285714283"/>
+        </scene>
         <!--Navigation Controller-->
         <scene sceneID="k7M-KD-13C">
             <objects>
@@ -434,7 +448,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EpL-rk-TwN" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2931.8840579710145" y="26.785714285714285"/>
+            <point key="canvasLocation" x="3840.579710144928" y="26.785714285714285"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="6Y4-v5-kKP">
@@ -452,7 +466,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4N9-5A-UGh" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="7249.275362318841" y="-40.178571428571423"/>
+            <point key="canvasLocation" x="8159.420289855073" y="-40.178571428571423"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="SEw-5p-FgC">
@@ -524,11 +538,30 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tev-Sk-ygt" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4989.8550724637689" y="183.48214285714286"/>
+            <point key="canvasLocation" x="5900.0000000000009" y="183.48214285714286"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="JNq-7Q-E3S">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="jD2-0o-txk" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="h5w-GN-QAE">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="qge-fB-mZZ" kind="relationship" relationship="rootViewController" id="NIF-a1-L8b"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="E1Y-om-POX" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2150.7246376811595" y="239.73214285714283"/>
         </scene>
     </scenes>
     <resources>
         <image name="command" catalog="system" width="128" height="115"/>
+        <image name="icloud.and.arrow.down.fill" catalog="system" width="128" height="112"/>
         <image name="person.circle" catalog="system" width="128" height="121"/>
         <image name="plus" catalog="system" width="128" height="113"/>
         <image name="scribble" catalog="system" width="128" height="118"/>

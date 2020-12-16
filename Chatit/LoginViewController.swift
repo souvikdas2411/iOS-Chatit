@@ -4,7 +4,7 @@
 //
 //  Created by Souvik Das on 08/12/20.
 //
-//FACEBOOK IS CAUSING SERIOUS PROBLEMS
+//FACEBOOK WAS CAUSING SERIOUS PROBLEMS BUT IS KINDA SOLVED NOW
 import UIKit
 import FirebaseAuth
 import FBSDKLoginKit
@@ -17,10 +17,17 @@ class LoginViewController: UIViewController {
     @IBOutlet var cont: UIButton!
     
     private let spinner = JGProgressHUD(style: .extraLight)
-    
+//    private var loginObserver: NSObjectProtocol?
     override func viewDidLoad() {
         super.viewDidLoad()
         //        spinner.show(in: view)
+        
+//        loginObserver = NotificationCenter.default.addObserver(forName: .didLogInNotification, object: nil, queue: .main, using: { [weak self] _ in
+////                    guard let strongSelf = self else {
+////                        return
+////                    }
+//
+//                })
 
         
         
@@ -31,7 +38,7 @@ class LoginViewController: UIViewController {
             return button
         }()
         loginButton.center = view.center
-//        view.addSubview(loginButton)
+        view.addSubview(loginButton)
         
         //MARK:- HARDCODING GOOGLE BUTTON CUZ OF SOME ANCHOR PROBLEM
         //        googleLoginButton.frame =  CGRect(x: 125, y: 355, width: 50, height: 30)
@@ -108,7 +115,7 @@ class LoginViewController: UIViewController {
                 }
             })
             
-            
+            //NotificationCenter.default.removeObserver(self.loginObserver)
             self.navigationController?.popToRootViewController(animated: true)
         })
         
@@ -232,6 +239,7 @@ extension LoginViewController: LoginButtonDelegate{
                     return
                 }
                 print("NO MFA")
+                //NotificationCenter.default.removeObserver(self.loginObserver)
                 self.navigationController?.popToRootViewController(animated: true)
             })
             
