@@ -10,6 +10,7 @@ import MessageKit
 import InputBarAccessoryView
 import FirebaseAuth
 import SDWebImage
+import CoreLocation
 
 struct Message: MessageType{
     var sender: SenderType
@@ -40,6 +41,13 @@ struct Media: MediaItem{
     
     var size: CGSize
     
+    
+}
+
+struct Location: LocationItem{
+    var location: CLLocation
+    
+    var size: CGSize
     
 }
 
@@ -110,6 +118,9 @@ class ChatViewController: MessagesViewController {
         actionSheet.addAction(UIAlertAction(title: "Audio", style: .default, handler: {[weak self] _ in
             
         }))
+        actionSheet.addAction(UIAlertAction(title: "Location", style: .default, handler: {[weak self] _ in
+            self?.presentLocationPicker()
+        }))
         actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil ))
         
         present(actionSheet, animated: true)
@@ -134,6 +145,48 @@ class ChatViewController: MessagesViewController {
         actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil ))
         
         present(actionSheet, animated: true)
+    }
+    private func presentLocationPicker(){
+        let vc = LocationPickerViewController(coordinates: nil)
+                vc.title = "Pick Location"
+                vc.navigationItem.largeTitleDisplayMode = .never
+                vc.completion = { [weak self] selectedCoorindates in
+
+                    guard let strongSelf = self else {
+                        return
+                    }
+
+                    guard let conversationId = strongSelf.conversationId,
+                        let name = strongSelf.title
+                         else {
+                            return
+                    }
+//                    let selfSender = self?.selfSender
+                    let messageId = UUID().uuidString
+                    let longitude: Double = selectedCoorindates.longitude
+                    let latitude: Double = selectedCoorindates.latitude
+
+                    print("long=\(longitude) | lat= \(latitude)")
+
+
+                    let location = Location(location: CLLocation(latitude: latitude, longitude: longitude),
+                                         size: .zero)
+
+                    let message = Message(sender: strongSelf.selfSender,
+                                          messageId: messageId,
+                                          sentDate: Date(),
+                                          kind: .location(location))
+
+                    DatabaseManager.shared.sendMessage(otherUserEmail: strongSelf.otherUserEmail, name: name, to: conversationId, newMessage: message, completion: { success in
+                        if success {
+                            print("sent location message")
+                        }
+                        else {
+                            print("failed to send location message")
+                        }
+                    })
+                }
+                navigationController?.pushViewController(vc, animated: true)
     }
     private func presentVideoInputActionSheet(){
         let actionSheet = UIAlertController(title: "Attach Video", message: "Select source", preferredStyle: .actionSheet)

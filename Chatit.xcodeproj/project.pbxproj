@@ -27,6 +27,7 @@
 		4F272394258537AD00827A4D /* ConversationsModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F272393258537AD00827A4D /* ConversationsModels.swift */; };
 		4F272397258539FC00827A4D /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F272396258539FC00827A4D /* Extensions.swift */; };
 		4F2723C3258A06CB00827A4D /* NewConversationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F2723C2258A06CB00827A4D /* NewConversationCell.swift */; };
+		4F42A680258A852400C39B8C /* LocationPickerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F42A67F258A852400C39B8C /* LocationPickerViewController.swift */; };
 		4F5C8EC025813A8D005BDA00 /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F5C8EBF25813A8D005BDA00 /* DatabaseManager.swift */; };
 /* End PBXBuildFile section */
 
@@ -53,6 +54,7 @@
 		4F272393258537AD00827A4D /* ConversationsModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationsModels.swift; sourceTree = "<group>"; };
 		4F272396258539FC00827A4D /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		4F2723C2258A06CB00827A4D /* NewConversationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewConversationCell.swift; sourceTree = "<group>"; };
+		4F42A67F258A852400C39B8C /* LocationPickerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationPickerViewController.swift; sourceTree = "<group>"; };
 		4F5C8EBF25813A8D005BDA00 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		940AA037DB58F90E3CCFD9D8 /* Pods-Chatit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Chatit.debug.xcconfig"; path = "Target Support Files/Pods-Chatit/Pods-Chatit.debug.xcconfig"; sourceTree = "<group>"; };
 		EA51AC1DDCB16819E4BB42BA /* Pods_Chatit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Chatit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -114,6 +116,7 @@
 				4F272393258537AD00827A4D /* ConversationsModels.swift */,
 				4F272396258539FC00827A4D /* Extensions.swift */,
 				4F2723C2258A06CB00827A4D /* NewConversationCell.swift */,
+				4F42A67F258A852400C39B8C /* LocationPickerViewController.swift */,
 			);
 			path = Chatit;
 			sourceTree = "<group>";
@@ -271,6 +274,7 @@
 				4F19B651257FE5CB00C3E4ED /* NewConversationViewController.swift in Sources */,
 				4F19B64B257FE42400C3E4ED /* LoginViewController.swift in Sources */,
 				4F2723862582A29900827A4D /* ChatViewController.swift in Sources */,
+				4F42A680258A852400C39B8C /* LocationPickerViewController.swift in Sources */,
 				4F27238925839A4C00827A4D /* StorageManager.swift in Sources */,
 				4F5C8EC025813A8D005BDA00 /* DatabaseManager.swift in Sources */,
 				4F19B64E257FE42D00C3E4ED /* RegisterViewController.swift in Sources */,
