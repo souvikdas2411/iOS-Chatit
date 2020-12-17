@@ -79,36 +79,6 @@ class ChatViewController: MessagesViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        guard let tempEmail = UserDefaults.standard.string(forKey: "email") else{
-            return
-        }
-        let tempsafeEmail = DatabaseManager.safeEmail(emailAddress: tempEmail)
-        
-        StorageManager.shared.downloadURL(for: "images/\(tempsafeEmail)_profile_pic.png", completion: { result in
-            switch result{
-            
-            case .success(let url):
-                self.senderPhotoURL = url
-            case .failure(let error):
-                print("Avatar error \(error)")
-            }
-        })
-        
-        
-        let tempOtherEmail = otherUserEmail
-            
-        let tempsafeOtherEmail = DatabaseManager.safeEmail(emailAddress: tempOtherEmail)
-        
-        StorageManager.shared.downloadURL(for: "images/\(tempsafeOtherEmail)_profile_pic.png", completion: { result in
-            switch result{
-            
-            case .success(let url):
-                self.otherUserPhotoURL = url
-            case .failure(let error):
-                print("Avatar error \(error)")
-            }
-        })
-        
         print(otherUserEmail)
         print(isNewConversation)
         
@@ -121,7 +91,7 @@ class ChatViewController: MessagesViewController {
         
         setupInputButton()
         if let id = conversationId {
-            listenForMessages(id: id)
+            listenForMessages(id: id, shouldScrollToBottom: true)
         }
         
     }
@@ -247,13 +217,13 @@ class ChatViewController: MessagesViewController {
     }
     
     //MARK:- VIEW DID APPEAR SECTION
-    //    override func viewDidAppear(_ animated: Bool) {
-    //        super.viewDidAppear(animated)
-    //        messageInputBar.inputTextView.becomeFirstResponder()
-    //    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        messageInputBar.inputTextView.becomeFirstResponder()
+    }
     
     //MARK:- LISTENING FOR EXISTING MESSAGES IN A CONVERSATION
-    public func listenForMessages(id: String){
+    public func listenForMessages(id: String, shouldScrollToBottom: Bool){
         DatabaseManager.shared.getAllMessageForConversation(with: id, completion: {[weak self] result in
             switch result{
             case .success(let messages):
@@ -261,6 +231,13 @@ class ChatViewController: MessagesViewController {
                     return
                 }
                 self?.messages = messages
+                DispatchQueue.main.async {
+                    self?.messagesCollectionView.reloadDataAndKeepOffset()
+                    
+                    if shouldScrollToBottom {
+                        self?.messagesCollectionView.scrollToBottom()
+                    }
+                }
                 
                 DispatchQueue.main.async {
                     ///THE STATEMENT BELOW KEEPS THE USER IN THE SAME SCROLL POSITION EVEN IF A NEW MESSAGE ARRIVES
@@ -272,7 +249,7 @@ class ChatViewController: MessagesViewController {
         })
     }
 }
-//MARK:-HANDLING ACCESSORY BAR/TEXT BAR DELEGATE
+//MARK:-HANDLING ACCESSORY BAR/TEXT BAR DELEGATES AND SENDONG MESSAGES
 extension ChatViewController: InputBarAccessoryViewDelegate{
     func inputBar(_ inputBar: InputBarAccessoryView, didPressSendButtonWith text: String) {
         
@@ -288,7 +265,10 @@ extension ChatViewController: InputBarAccessoryViewDelegate{
                     print("message sent")
                     self?.isNewConversation = false
                     self?.messageInputBar.inputTextView.text = nil
-//                    self?.messageInputBar.resignFirstResponder()
+                    let newConversationId = "conversation_\(uuid)"
+                    print("conversation_\(uuid)")
+                    self?.conversationId = newConversationId
+                    self?.listenForMessages(id: newConversationId, shouldScrollToBottom: true)
                 }
                 else{
                     print("failed to send message")
@@ -364,16 +344,53 @@ extension ChatViewController: MessagesDataSource, MessagesLayoutDelegate, Messag
     func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
         let sender = message.sender
         if sender.senderId == selfSender.senderId{
-            //this is us
-            DispatchQueue.main.async {
-                avatarView.sd_setImage(with: self.senderPhotoURL, completed: nil)
+            
+            if let currentUserEmail = self.senderPhotoURL{
+                avatarView.sd_setImage(with: currentUserEmail, completed: nil)
             }
+            
+            else{
+                guard let tempEmail = UserDefaults.standard.string(forKey: "email") else{
+                    return
+                }
+                let tempsafeEmail = DatabaseManager.safeEmail(emailAddress: tempEmail)
+                
+                StorageManager.shared.downloadURL(for: "images/\(tempsafeEmail)_profile_pic.png", completion: { result in
+                    switch result{
+                    case .success(let url):
+                        DispatchQueue.main.async {
+                            
+                            avatarView.sd_setImage(with: url, completed: nil)
+                        }
+                    case .failure(let error):
+                        print("Avatar error \(error)")
+                    }
+                })
+            }
+            
             
         }
         else{
             
-            DispatchQueue.main.async {
-                avatarView.sd_setImage(with: self.otherUserPhotoURL, completed: nil)
+            if let currentUserEmail = self.otherUserPhotoURL{
+                avatarView.sd_setImage(with: currentUserEmail, completed: nil)
+            }
+            
+            else{
+                let tempEmail = otherUserEmail
+                let tempsafeEmail = DatabaseManager.safeEmail(emailAddress: tempEmail)
+                
+                StorageManager.shared.downloadURL(for: "images/\(tempsafeEmail)_profile_pic.png", completion: { result in
+                    switch result{
+                    case .success(let url):
+                        DispatchQueue.main.async {
+                            
+                            avatarView.sd_setImage(with: url, completed: nil)
+                        }
+                    case .failure(let error):
+                        print("Avatar error \(error)")
+                    }
+                })
             }
             
         }

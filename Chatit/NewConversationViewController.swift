@@ -57,7 +57,6 @@ extension NewConversationViewController: UITableViewDelegate, UITableViewDataSou
         let model = results[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: NewConversationCell.identifier,for: indexPath) as! NewConversationCell
         cell.configure(with: model)
-        //cell.textLabel?.text = results[indexPath.row].name
         return cell
     }
     
@@ -67,19 +66,7 @@ extension NewConversationViewController: UITableViewDelegate, UITableViewDataSou
         // start conversation
         let targerUserData = results[indexPath.row]
         
-//        navigationController?.popToRootViewController(animated: true, completion:{[weak self] in
-//            self?.completion?(targerUserData)
-//
-//        })
         self.completion?(targerUserData)
-//        navigationController?.popToRootViewController(animated: true)
-//        navigationController?.dismiss(animated: true, completion: {[weak self] in
-//            self?.completion?(targerUserData)
-//
-//        })
-//        dismiss(animated: true, completion: {[weak self] in
-//            self?.completion?(targerUserData)
-//        })
         
         
     }
