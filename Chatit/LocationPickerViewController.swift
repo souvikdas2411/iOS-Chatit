@@ -74,11 +74,12 @@ final class LocationPickerViewController: UIViewController {
         for annotation in map.annotations {
             map.removeAnnotation(annotation)
         }
-
+        
         ///drop a pin on that location
         let pin = MKPointAnnotation()
         pin.coordinate = coordinates
         map.addAnnotation(pin)
+        
     }
 
     override func viewDidLayoutSubviews() {

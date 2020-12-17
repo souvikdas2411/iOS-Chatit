@@ -10,10 +10,12 @@ import FirebaseAuth
 import FBSDKLoginKit
 import GoogleSignIn
 import JGProgressHUD
+import SDWebImage
 class ProfileViewController: UIViewController {
     
     @IBOutlet var signOut : UIBarButtonItem!
     @IBOutlet var address : UITextView!
+    @IBOutlet var username : UITextView!
     @IBOutlet var profileImg : UIImageView!
     
     private let spinner = JGProgressHUD(style: .extraLight)
@@ -25,6 +27,8 @@ class ProfileViewController: UIViewController {
         
         let safeText = UserDefaults.standard.string(forKey: "email")
         address.text = safeText
+        let safeName = UserDefaults.standard.string(forKey: "name")
+        username.text = safeName
         
         let safeEmail = DatabaseManager.safeEmail(emailAddress: safeText ?? " ")
         let fileName = safeEmail + "_profile_pic.png"
@@ -42,18 +46,21 @@ class ProfileViewController: UIViewController {
     }
     
     func downloadImage(imageView: UIImageView, url:URL){
+        imageView.sd_setImage(with: url, completed: nil)
         
-        URLSession.shared.dataTask(with: url, completionHandler: {data,_, error in
-            guard let data = data, error == nil else{
-                return
-            }
-            DispatchQueue.main.async {
-                let image = UIImage(data: data)
-                self.profileImg.image = image
-                self.spinner.dismiss()
-            }
-            
-        }).resume()
+        ///URL SESSIONS ARE DUMB SLOW USE SD WEB IMAGE FOR BETTER CACHING
+        
+//        URLSession.shared.dataTask(with: url, completionHandler: {data,_, error in
+//            guard let data = data, error == nil else{
+//                return
+//            }
+//            DispatchQueue.main.async {
+//                let image = UIImage(data: data)
+//                self.profileImg.image = image
+//                self.spinner.dismiss()
+//            }
+//
+//        }).resume()
     }
     
     
