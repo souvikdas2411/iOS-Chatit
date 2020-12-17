@@ -151,6 +151,7 @@
 				4F19B62E257FE40C00C3E4ED /* Resources */,
 				86CB0862703767C4AF45DDAE /* [CP] Embed Pods Frameworks */,
 				61662F919593D826D41CB1E1 /* [CP] Copy Pods Resources */,
+				4FC5D91C258BBC3B00C09715 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -208,6 +209,23 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		4FC5D91C258BBC3B00C09715 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/FirebaseCrashlytics/run\"\n";
+		};
 		61662F919593D826D41CB1E1 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;

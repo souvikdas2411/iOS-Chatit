@@ -48,7 +48,7 @@ class ProfileViewController: UIViewController {
     func downloadImage(imageView: UIImageView, url:URL){
         imageView.sd_setImage(with: url, completed: nil)
         self.spinner.dismiss()
-        ///URL SESSIONS ARE DUMB SLOW USE SD WEB IMAGE FOR BETTER CACHING
+        ///URL SESSIONS ARE DUMB SLOW USE SD WEB IMAGE 
         
 //        URLSession.shared.dataTask(with: url, completionHandler: {data,_, error in
 //            guard let data = data, error == nil else{

@@ -54,6 +54,9 @@ struct Location: LocationItem{
 
 class ChatViewController: MessagesViewController {
     
+    private var senderPhotoURL: URL? //USED FOR AVATARS
+    private var otherUserPhotoURL: URL? //USED FOR AVATARS
+    
     public static let dateFormatter: DateFormatter = {
         let formattre = DateFormatter()
         formattre.dateStyle = .medium
@@ -76,9 +79,38 @@ class ChatViewController: MessagesViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        guard let tempEmail = UserDefaults.standard.string(forKey: "email") else{
+            return
+        }
+        let tempsafeEmail = DatabaseManager.safeEmail(emailAddress: tempEmail)
+        
+        StorageManager.shared.downloadURL(for: "images/\(tempsafeEmail)_profile_pic.png", completion: { result in
+            switch result{
+            
+            case .success(let url):
+                self.senderPhotoURL = url
+            case .failure(let error):
+                print("Avatar error \(error)")
+            }
+        })
+        
+        
+        let tempOtherEmail = otherUserEmail
+            
+        let tempsafeOtherEmail = DatabaseManager.safeEmail(emailAddress: tempOtherEmail)
+        
+        StorageManager.shared.downloadURL(for: "images/\(tempsafeOtherEmail)_profile_pic.png", completion: { result in
+            switch result{
+            
+            case .success(let url):
+                self.otherUserPhotoURL = url
+            case .failure(let error):
+                print("Avatar error \(error)")
+            }
+        })
+        
         print(otherUserEmail)
         print(isNewConversation)
-        //        print(UserDefaults.standard.string(forKey: "email"))
         
         messagesCollectionView.messagesDataSource = self
         messagesCollectionView.messagesLayoutDelegate = self
@@ -256,6 +288,7 @@ extension ChatViewController: InputBarAccessoryViewDelegate{
                     print("message sent")
                     self?.isNewConversation = false
                     self?.messageInputBar.inputTextView.text = nil
+//                    self?.messageInputBar.resignFirstResponder()
                 }
                 else{
                     print("failed to send message")
@@ -272,6 +305,7 @@ extension ChatViewController: InputBarAccessoryViewDelegate{
                 if success{
                     self?.messageInputBar.inputTextView.text = nil
                     print("message sent")
+//                    self?.messageInputBar.resignFirstResponder()
                 }
                 else{
                     print("failed acknowledgenment from messages")
@@ -312,6 +346,36 @@ extension ChatViewController: MessagesDataSource, MessagesLayoutDelegate, Messag
 
         default:
             break
+        }
+    }
+    
+    ///YOU CAN CHANGE BG COLOR OF MESSAGES USING THE FUNC BELOW
+//    func backgroundColor(for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) -> UIColor {
+//        let sender = message.sender
+//        if sender.senderId == selfSender.senderId{
+//            //this is us
+//            return .black
+//        }
+//        else{
+//            //this is the other guy
+//            return .blue
+//        }
+//    }
+    func configureAvatarView(_ avatarView: AvatarView, for message: MessageType, at indexPath: IndexPath, in messagesCollectionView: MessagesCollectionView) {
+        let sender = message.sender
+        if sender.senderId == selfSender.senderId{
+            //this is us
+            DispatchQueue.main.async {
+                avatarView.sd_setImage(with: self.senderPhotoURL, completed: nil)
+            }
+            
+        }
+        else{
+            
+            DispatchQueue.main.async {
+                avatarView.sd_setImage(with: self.otherUserPhotoURL, completed: nil)
+            }
+            
         }
     }
 }
