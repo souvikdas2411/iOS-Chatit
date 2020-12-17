@@ -163,7 +163,6 @@ class ChatViewController: MessagesViewController {
                          else {
                             return
                     }
-//                    let selfSender = self?.selfSender
                     let messageId = UUID().uuidString
                     let longitude: Double = selectedCoorindates.longitude
                     let latitude: Double = selectedCoorindates.latitude
@@ -206,7 +205,6 @@ class ChatViewController: MessagesViewController {
             let picker = UIImagePickerController()
             picker.sourceType = .photoLibrary
             picker.mediaTypes = ["public.movie"]
-            //            picker.videoQuality = .typeMedium
             picker.delegate = self
             picker.allowsEditing = true
             self?.present(picker, animated: true)
@@ -285,7 +283,6 @@ extension ChatViewController: InputBarAccessoryViewDelegate{
                 if success{
                     self?.messageInputBar.inputTextView.text = nil
                     print("message sent")
-//                    self?.messageInputBar.resignFirstResponder()
                 }
                 else{
                     print("failed acknowledgenment from messages")

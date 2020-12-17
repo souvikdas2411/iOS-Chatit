@@ -17,21 +17,10 @@ class LoginViewController: UIViewController {
     @IBOutlet var cont: UIButton!
     
     private let spinner = JGProgressHUD(style: .extraLight)
-//    private var loginObserver: NSObjectProtocol?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        //        spinner.show(in: view)
-        
-//        loginObserver = NotificationCenter.default.addObserver(forName: .didLogInNotification, object: nil, queue: .main, using: { [weak self] _ in
-////                    guard let strongSelf = self else {
-////                        return
-////                    }
-//
-//                })
 
-        
-        
-        
         let loginButton: FBLoginButton = {
             let button = FBLoginButton()
             button.permissions = ["email,public_profile"]
@@ -55,14 +44,13 @@ class LoginViewController: UIViewController {
         
         view.addGestureRecognizer(tap)
         
-        // Do any additional setup after loading the view.
-        
         eid.delegate = self
         pass.delegate = self
         
         
     }
     func tap1() {
+        self.spinner.dismiss()
         let uialert = UIAlertController(title: "Error", message: "Error siging in", preferredStyle: UIAlertController.Style.alert)
         uialert.addAction(UIAlertAction(title: "Close", style: UIAlertAction.Style.default, handler: nil))
         self.present(uialert, animated: true, completion: nil)
@@ -115,7 +103,6 @@ class LoginViewController: UIViewController {
                 }
             })
             
-            //NotificationCenter.default.removeObserver(self.loginObserver)
             self.navigationController?.popToRootViewController(animated: true)
         })
         
